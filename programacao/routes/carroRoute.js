@@ -1,4 +1,5 @@
-const carro = require('../programacao/carro/carroController.js');
+const 
+    carro = require('../programacao/carro/carroController.js');
 
 module.exports = function(app){
 
