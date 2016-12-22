@@ -1,0 +1,17 @@
+Comandos Github
+
+git remote add origin http://github.com/CleberRezende/eng.git
+
+git push origin master
+
+git status - (vermelho)
+
+git add . "nomes arquivos"
+
+git status - (verder)
+
+git commit -m "nome"
+
+git push origin master
+
+pronto*
