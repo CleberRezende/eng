@@ -1,10 +1,9 @@
-const 
-    carro = require('../programacao/carro/carroController.js');
+const carro = require('../programacao/carro/carroController.js');
 
-module.exports = function(app){
+module.exports = function (app) {
 
-    app.route('/api/carro')
-        .post(carro.criar)          
+    app.route('/api/carro/')
+        .post(carro.criar)
         .get(carro.selecionar);
 
     app.route('/api/carro/:id')

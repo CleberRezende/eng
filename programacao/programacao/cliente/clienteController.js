@@ -1,4 +1,4 @@
-const Repository = require('./carroRepository'),
+const Repository = require('./clienteRepository.js'),
     sql = require('mssql'),
     config = require('../conectarBanco/config.js'),
     waterfall = require('async-waterfall');
@@ -11,17 +11,21 @@ module.exports = {
     editar,
     deletar,
     selecionar,
-    buscar,
+    buscar
 };
 
 
 
 
+
+
+
 function criar(req, res) {
-    conn = sql.connect(config).then(
+    conn = connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
+
         function (callback) {
             transaction.begin(function (err) {
                 if (err)
@@ -32,7 +36,7 @@ function criar(req, res) {
         },
 
         function (callback) {
-            Repository.criarCarro(transaction, req, function (err, dados, id) {
+            Repository.criarCliente(transaction, req, function (err, dados, id) {
                 if (err)
                     callback(err, dados);
                 else
@@ -40,14 +44,95 @@ function criar(req, res) {
             });
         },
 
-        function (id, req, callback) {
-            Repository.criarOpcional(transaction, req, function (err, dados) {
+        function (id, dados, callback) {
+            Repository.criarEndereco(transaction, id, req, function (err, dados, id) {
+                if (err)
+                    callback(err, dados);
+                else
+                    callback(null, id, dados);
+            });
+        },
+
+        function (id, dados, callback) {
+            Repository.criarTelefone(transaction, id, req, function (err, dados, id) {
                 if (err)
                     callback(err, dados);
                 else
                     callback(null, dados);
             });
         },
+
+
+    ], function (err, dado) {
+        if (err) {
+            transaction.rollback(function (erro) {
+                if (erro)
+                    console.log('Erro Rollback: ' + erro);
+                else
+                    res.status(err).json(dados);
+            });
+        }
+        else {
+            transaction.commit(function (erro) {
+                if (erro)
+                    console.log('Erro Commited: ' + erro);
+                else
+                    res.status(200).json(dados);
+            });
+        }
+    }); // FIM WATERFALL
+} // FIM CRIAR
+
+
+
+
+
+
+
+
+
+
+function editar(req, res) {
+    conn = sql.connect(config).then(
+        transaction = new sql.Transaction(conn));
+
+    waterfall([
+
+        function (callback) {
+            transaction.begin(function (err) {
+                if (err)
+                    callback(err);
+                else
+                    callback(null);
+            });
+        },
+
+        function (callback) {
+            Repository.editarCliente(transaction, req, function (err, dados) {
+                if (err)
+                    callback(err, { informacao: 'Erro Ao Editar Cliente' });
+                else
+                    callback(null, { informacao: 'Cliente Editado Com Sucesso' });
+            });
+        },
+
+        function (err, dados) {
+            Repository.editarEndereco(transaction, req, function (err, dados) {
+                if (err)
+                    callback(err, { informacao: 'Erro Ao Editar Endereco Cliente' });
+                else
+                    callback(null, { informacao: 'Telefone Cliente Editado Com Sucesso' });
+            });
+        },
+
+        function (err, dados) {
+            Repository.editarTelefone(transaction, req, function (err, dados) {
+                if (err)
+                    callback(err, { informacao: 'Erro Ao Editar Telefone Cliente' });
+                else
+                    callback(null, { informacao: 'Telefone Cliente Editado Com Sucesso' });
+            });
+        }
 
     ], function (err, dados) {
         if (err) {
@@ -66,65 +151,11 @@ function criar(req, res) {
                     res.status(200).json(dados);
             });
         }
-    });// FIM WATERFALL
-} // FIM FUNCTION CRIAR
+    }); // FIM WATERFALL
+}
 
 
 
-
-
-function editar(req, res) {
-    conn = sql.connect(config).then(
-        transaction = new sql.Transaction(conn));
-
-    waterfall([
-        function (callback) {
-            transaction.begin(function (err) {
-                if (err)
-                    callback(err);
-                else
-                    callback(null);
-            });
-        },
-
-        function (callback) {
-            Repository.editarCarro(transaction, req, function (err, dados) {
-                if (err)
-                    callback(err, dados);
-                else
-                    callback(null, dados);
-            });
-        },
-
-        function (dados, callback) {
-            Repository.editarOpcional(transaction, req, function (err, dados) {
-                if (err)
-                    callback(err, dados);
-                else
-                    callback(null, dados);
-            });
-        }
-
-    ], function (err, dados) {
-        if (err) {
-            transaction.rollback(function (erro) {
-                if (erro)
-                    console.log('Erro Rollback: ' + erro);
-                else
-                    res.status(err).json(dados);
-            });
-        }
-        else {
-            transaction.commit(function (erro) {
-                if (erro)
-                    console.log('Erro Commited: ' + erro);
-                else
-                    res.status(err).json(dados);
-            });
-        }
-    }
-    );// FIM WATERFALL EDITAR 
-}// FIM FUNCTION EDITAR
 
 
 
@@ -136,6 +167,7 @@ function deletar(req, res) {
         transaction = new sql.Transaction(conn));
 
     waterfall([
+
         function (callback) {
             transaction.begin(function (err) {
                 if (err)
@@ -146,7 +178,7 @@ function deletar(req, res) {
         },
 
         function (callback) {
-            Repository.deletarCarro(transaction, req, function (err, dados) {
+            Repository.deletarCliente(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -154,56 +186,65 @@ function deletar(req, res) {
             });
         },
 
-        function (dados, callback) {
-            Repository.deletarOpcional(transaction, req, function (err, dados) {
+        function (callback) {
+            Repository.deletarEndereco(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
                     callback(null, dados);
             });
         },
+
+        function (callback) {
+            Repository.deletarTelefone(transaction, req, function (err, dados) {
+                if (err)
+                    callback(err, dados);
+                else
+                    callback(null, dados);
+            });
+        }
 
     ], function (err, dados) {
         if (err) {
             transaction.rollback(function (erro) {
-                if (erro) {
+                if (erro)
                     console.log('Erro Rollback: ' + erro);
+                else
                     res.status(err).json(dados);
-                }
-                else {
-                    console.log('Rollback OK');
-                    res.status(err).json(dados);
-                }
             });
         }
         else {
             transaction.commit(function (erro) {
-                if (erro) {
-                    console.log('Erro Commit: ' + erro);
-                    res.status(500).json(dados);
-                }
-                else {
-                    console.log('Commit OK');
+                if (erro)
+                    console.log('Erro Commited: ' + erro);
+                else
                     res.status(200).json(dados);
-                }
             });
         }
-
     }); // FIM WATERFALL
-} // FIM FUNCTION DELETAR
+} // FIM DELETAR
+
+
+
+
+
 
 
 
 
 
 function selecionar(req, res) {
-    Repository.selecionarCarro(req, function (err, dados) {
+    Repository.selecionarCliente(req, function (err, dados) {
         if (err)
             res.status(err).json(dados);
         else
             res.status(200).json(dados);
-    }); // Repository
-}// FIM FUNCTION SELECIONAR
+    });
+} // FIM SELECIONAR
+
+
+
+
 
 
 
@@ -211,10 +252,10 @@ function selecionar(req, res) {
 
 
 function buscar(req, res) {
-    Repository.buscarCarro(req, function (erro, dados) {
+    Repository.buscarCliente(req, function (err, dados) {
         if (err)
             res.status(err).json(dados);
         else
             res.status(200).json(dados);
     });
-} // FIM FUNCTION BUSCAR
+} // FIM BUSCAR
