@@ -1,15 +1,17 @@
 const sql = require('mssql'),
-    config = require('../conectarBanco/config.js');
+    config = require('../conectarBanco/config.js'),
+    Promise = require('promise');
 
 module.exports = {
     criarCarro,
     criarOpcional,
+    criarOpcionalCarro,
     editarCarro,
-    editarOpcional,
+    editarOpcionalCarro,
     deletarCarro,
     deletarOpcional,
     selecionarCarro,
-    buscarCarro
+    procurarCarro
 };
 
 
@@ -23,11 +25,11 @@ function criarCarro(transaction, req, callback) {
         .input('COR', req.body.cor)
         .input('ANO', req.body.ano)
         .input('PRECO', req.body.preco)
-        .execute('SP_INSERIR_CARRO', function (err, recordset, returnValue) {
+        .execute('SP_CRIAR_CARRO', function (err, recordset, returnValue_idCarro) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Inserir Carro' }, null);
             else
-                callback(null, { informacao: 'Carro Criado Com Sucesso' }, returnValue);
+                callback(null, { informacao: 'Carro Criado Com Sucesso' }, returnValue_idCarro);
         });
 }
 
@@ -39,17 +41,48 @@ function criarCarro(transaction, req, callback) {
 
 
 
-function criarOpcional(transaction, req, id, callback) {
+
+
+
+function criarOpcional(transaction, req, idCarro, callback) {
     new sql.Request(transaction)
-        .input('nome_da_váriavel', id)
-        .input('nome_do_opcional', req.body.nome_opcional)
-        .execute('nome_da_proc', function (err, dados) {
+        .input('IDCARRO', idCarro)
+        .input('OPC_DESCRICAO', req.body.opcional)
+        .execute('SP_CRIAR_OPCINAL', function (err, dados, returnValue_idOpcional) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Inserir Opcionais' });
             else
-                callback(null, { informacao: 'Opcionais Criado Com Sucesso' });
+                callback(null, { informacao: 'Opcionais Criado Com Sucesso' }, returnValue_idOpcional);
         });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+function criarOpcionalCarro(transaction, opcional, idCarro, callback) {
+    new sql.Request(transaction)
+        .input('IDCARRO', idCarro)
+        .input('IDOPCIONAL',opcional)
+        .execute('SP_CRIAR_OPCINAL_CARRO', function (err, dados) {
+            if (err)
+                callback(500, { informacao: 'Erro Ao Criar criar_opcional_carro - carroRepository' });
+            else
+                callback(null, { informacao: 'Tabela Opcional_Carro Cadastrado Com Sucesso' });
+        });
+}
+
+
+
+
+
 
 
 
@@ -61,9 +94,13 @@ function criarOpcional(transaction, req, id, callback) {
 
 function editarCarro(transaction, req, callback) {
     new sql.Request(transaction)
-        .input('nome_da_váriavel', req.params.id)
-        .input('nome_do_carro', req.body.nome_carro)
-        .execute('nome_da_proc', function (err, dados) {
+        .input('ID', req.params.id)
+        .input('MARCA', req.body.marca)
+        .input('MODELO', req.body.modelo)
+        .input('COR', req.body.cor)
+        .input('ANO', req.body.ano)
+        .input('PRECO', req.body.preco)
+        .execute('SP_EDITAR_CARRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Editar Carro' });
             else
@@ -80,11 +117,11 @@ function editarCarro(transaction, req, callback) {
 
 
 
-function editarOpcional(transaction, req, callback) {
+function editarOpcionalCarro(transaction, req, opcional, callback) {
     new sql.Request(transaction)
-        .input('nome_da_váriavel', req.params.id)
-        .input('nome_do_opcional', req.body.nome_opcional)
-        .execute('nome_da_proc', function (err, dados) {
+        .input('IDCARRO', req.params.id)
+        .input('IDOPCIONAL', opcional)
+        .execute('SP_CRIAR_OPCINAL_CARRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Editar Opcional' });
             else
@@ -100,10 +137,10 @@ function editarOpcional(transaction, req, callback) {
 
 
 
-function deletarCarro(transaction, req, callback) {
+function deletarCarro(transaction, id, callback) {
     new sql.Request(transaction)
-        .input('ID', req.params.id)
-        .execute('nome_proc', function (err) {
+        .input('ID', id)
+        .execute('SP_DELETAR_CARRO', function (err) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Carro' });
             else
@@ -119,10 +156,10 @@ function deletarCarro(transaction, req, callback) {
 
 
 
-function deletarOpcional(transaction, req, callback) {
+function deletarOpcional(transaction, id, callback) {
     new sql.Request(transaction)
-        .input('ID', req.params.id)
-        .input('nome_proc', function (err) {
+        .input('ID', id)
+        .execute('SP_DELETAR_OPCINAL_CARRO', function (err,dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Opcionais' });
             else
@@ -156,10 +193,15 @@ function selecionarCarro(req, callback) {
 
 
 
-function buscarCarro(req, callback) {
+function procurarCarro(query, callback) {
     new sql.Request()
-        .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .input('MARCA', query.marca)
+        .input('MODELO', query.modelo)
+        .input('COR', query.cor)
+        .input('ANO', query.ano)
+        .input('PRECO', query.preco)
+        .input('DESCRICAO', query.descricao)
+        .execute('SP_PROCURAR_CARRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Buscar Carro' });
             else

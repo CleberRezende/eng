@@ -11,7 +11,7 @@ module.exports = {
     editar,
     deletar,
     selecionar,
-    buscar,
+    procurarCarro,
 };
 
 
@@ -32,22 +32,35 @@ function criar(req, res) {
         },
 
         function (callback) {
-            Repository.criarCarro(transaction, req, function (err, dados, id) {
+            Repository.criarCarro(transaction, req, function (err, dados, idCarro) {
                 if (err)
                     callback(err, dados);
                 else
-                    callback(null, id, dados);
+                    callback(null, idCarro);
             });
         },
 
-        function (id, req, callback) {
-            Repository.criarOpcional(transaction, req, function (err, dados) {
-                if (err)
-                    callback(err, dados);
-                else
-                    callback(null, dados);
-            });
-        },
+        function (idCarro, callback) {
+            let promises = req.body.opcionais.map(opcional => new Promise((resolve, reject) => {
+                Repository.criarOpcionalCarro(transaction, opcional.opcional, idCarro, function (err, dados) {
+                    if (err)
+                        reject(dados);
+                    else
+                        resolve(null);
+
+                }); // FIM Repository.criarOpcionalCarro
+            })); // FIM LET PROMISSES
+
+
+            Promise.all(promises).then(() => {
+                callback(null);
+            }, (err) => {
+                callback(500, dados);
+            }
+
+            );
+
+        } // FIM FUNCTION
 
     ], function (err, dados) {
         if (err) {
@@ -63,7 +76,8 @@ function criar(req, res) {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
-                    res.status(200).json(dados);
+                    console.log('Carro e Opcional Cadastrado Com Sucesso: ' + erro);
+                res.status(200).json(dados);
             });
         }
     });// FIM WATERFALL
@@ -97,12 +111,34 @@ function editar(req, res) {
         },
 
         function (dados, callback) {
-            Repository.editarOpcional(transaction, req, function (err, dados) {
+            Repository.deletarOpcional(transaction, req.params.id, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
                     callback(null, dados);
             });
+        },
+
+        function (dados, callback) {
+            let promises = req.body.opcionais.map(opcional => new Promise((resolve, reject) => {
+                Repository.editarOpcionalCarro(transaction, req, opcional.opcional, function (err, dados) {
+                    if (err)
+                        reject(dados);
+                    else
+                        resolve(null);
+
+                }); // FIM Repository.criarOpcionalCarro
+            })); // FIM LET PROMISSES
+
+
+            Promise.all(promises).then(() => {
+                callback(null);
+            }, (err) => {
+                callback(500, dados);
+            }
+
+            );
+
         }
 
     ], function (err, dados) {
@@ -119,7 +155,7 @@ function editar(req, res) {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
-                    res.status(err).json(dados);
+                    res.status(200).json(dados);
             });
         }
     }
@@ -146,7 +182,7 @@ function deletar(req, res) {
         },
 
         function (callback) {
-            Repository.deletarCarro(transaction, req, function (err, dados) {
+            Repository.deletarOpcional(transaction, req.params.id, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -155,7 +191,7 @@ function deletar(req, res) {
         },
 
         function (dados, callback) {
-            Repository.deletarOpcional(transaction, req, function (err, dados) {
+            Repository.deletarCarro(transaction, req.params.id, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -210,8 +246,8 @@ function selecionar(req, res) {
 
 
 
-function buscar(req, res) {
-    Repository.buscarCarro(req, function (erro, dados) {
+function procurarCarro(req, res) {
+    Repository.procurarCarro(req.query, function (erro, dados) {
         if (err)
             res.status(err).json(dados);
         else
