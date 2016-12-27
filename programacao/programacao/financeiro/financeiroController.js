@@ -1,4 +1,5 @@
 const Repository = require('./financeiroRepository.js'),
+    CalculoFinanceiro = require('./financeiroCalculo.js'),
     sql = require('mssql'),
     config = require('../conectarBanco/config.js'),
     waterfall = require('async-waterfall');
@@ -15,14 +16,13 @@ module.exports = {
 };
 
 
-
+// CalculoFinanceiro.calcular(req, function(valorParcela))
 
 
 
 function criar(req, res) {
     // conn = connect(config).then(
     //     transaction = new sql.Transaction(conn));
-
     Repository.criarFinanceiro(req, function(err, dados){
         if(err)
             res.status(err).json(dados);
