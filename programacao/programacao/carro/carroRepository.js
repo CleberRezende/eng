@@ -11,7 +11,7 @@ module.exports = {
     deletarCarro,
     deletarOpcional,
     selecionarCarro,
-    procurarCarro
+    buscar
 };
 
 
@@ -70,7 +70,7 @@ function criarOpcional(transaction, req, idCarro, callback) {
 function criarOpcionalCarro(transaction, opcional, idCarro, callback) {
     new sql.Request(transaction)
         .input('IDCARRO', idCarro)
-        .input('IDOPCIONAL',opcional)
+        .input('IDOPCIONAL', opcional)
         .execute('SP_CRIAR_OPCINAL_CARRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Criar criar_opcional_carro - carroRepository' });
@@ -156,10 +156,12 @@ function deletarCarro(transaction, id, callback) {
 
 
 
+
+
 function deletarOpcional(transaction, id, callback) {
     new sql.Request(transaction)
         .input('ID', id)
-        .execute('SP_DELETAR_OPCINAL_CARRO', function (err,dados) {
+        .execute('SP_DELETAR_OPCINAL_CARRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Opcionais' });
             else
@@ -175,14 +177,25 @@ function deletarOpcional(transaction, id, callback) {
 
 
 
-function selecionarCarro(req, callback) {
-    new sql.Request()
-        .execute('nome_proc', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao Selecionar Carros' });
-            else
-                callback(null, { informacao: 'Carros Selecionados Com Sucesso' });
-        });
+
+
+
+function selecionarCarro(query, callback) {
+    sql.connect(config).then(function () {
+        new sql.Request()
+            .input('MARCA', query.marca)
+            .input('MODELO', query.modelo)
+            .input('COR', query.cor)
+            .input('ANO', query.ano)
+            .input('PRECO', query.preco)
+            .input('DESCRICAO', query.descricao)
+            .execute('SP_PROCURAR_CARRO', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao Buscar Carro' });
+                else
+                    callback(null, { informacao: 'Carro Buscado Com Sucesso' });
+            });
+    });
 }
 
 
@@ -193,18 +206,20 @@ function selecionarCarro(req, callback) {
 
 
 
-function procurarCarro(query, callback) {
-    new sql.Request()
-        .input('MARCA', query.marca)
-        .input('MODELO', query.modelo)
-        .input('COR', query.cor)
-        .input('ANO', query.ano)
-        .input('PRECO', query.preco)
-        .input('DESCRICAO', query.descricao)
-        .execute('SP_PROCURAR_CARRO', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao Buscar Carro' });
-            else
-                callback(null, { informacao: 'Carro Buscado Com Sucesso' });
-        });
+
+
+
+
+
+function buscar(params, callback) {
+    sql.connect(config).then(function () {
+        new sql.Request()
+            .input('ID', params.id)
+            .execute('SP_BUSCAR_CARRO', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao Deletar Opcionais' });
+                else
+                    callback(null, { informacao: 'Carro Opcionais Deletados Com Sucesso' });
+            });
+    });
 }

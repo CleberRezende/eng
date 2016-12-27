@@ -9,6 +9,6 @@ module.exports = function (app) {
     app.route('/api/carro/:id')
         .put(carro.editar)
         .delete(carro.deletar)
-        .get(carro.procurarCarro);
+        .get(carro.buscar);
 
 };

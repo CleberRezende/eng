@@ -3,27 +3,28 @@ const Repository = require('./carroRepository'),
     config = require('../conectarBanco/config.js'),
     waterfall = require('async-waterfall');
 
-var transaction,
-    conn;
+// var transaction,
+//     conn;
 
 module.exports = {
     criar,
     editar,
     deletar,
     selecionar,
-    procurarCarro,
+    buscar
 };
 
 
 
 
 function criar(req, res) {
-    conn = sql.connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
-        function (callback) {
-            transaction.begin(function (err) {
+        function(callback) {
+            transaction.begin(function(err) {
                 if (err)
                     callback(err);
                 else
@@ -31,8 +32,8 @@ function criar(req, res) {
             });
         },
 
-        function (callback) {
-            Repository.criarCarro(transaction, req, function (err, dados, idCarro) {
+        function(callback) {
+            Repository.criarCarro(transaction, req, function(err, dados, idCarro) {
                 if (err)
                     callback(err, dados);
                 else
@@ -40,9 +41,9 @@ function criar(req, res) {
             });
         },
 
-        function (idCarro, callback) {
+        function(idCarro, callback) {
             let promises = req.body.opcionais.map(opcional => new Promise((resolve, reject) => {
-                Repository.criarOpcionalCarro(transaction, opcional.opcional, idCarro, function (err, dados) {
+                Repository.criarOpcionalCarro(transaction, opcional.opcional, idCarro, function(err, dados) {
                     if (err)
                         reject(dados);
                     else
@@ -62,9 +63,9 @@ function criar(req, res) {
 
         } // FIM FUNCTION
 
-    ], function (err, dados) {
+    ], function(err, dados) {
         if (err) {
-            transaction.rollback(function (erro) {
+            transaction.rollback(function(erro) {
                 if (erro)
                     console.log('Erro Rollback: ' + erro);
                 else
@@ -72,11 +73,11 @@ function criar(req, res) {
             });
         }
         else {
-            transaction.commit(function (erro) {
+            transaction.commit(function(erro) {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
-                    console.log('Carro e Opcional Cadastrado Com Sucesso: ' + erro);
+                    console.log('Carro e Opcional Cadastrado Com Sucesso: ');
                 res.status(200).json(dados);
             });
         }
@@ -87,13 +88,17 @@ function criar(req, res) {
 
 
 
+
+
+
 function editar(req, res) {
-    conn = sql.connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
-        function (callback) {
-            transaction.begin(function (err) {
+        function(callback) {
+            transaction.begin(function(err) {
                 if (err)
                     callback(err);
                 else
@@ -101,8 +106,8 @@ function editar(req, res) {
             });
         },
 
-        function (callback) {
-            Repository.editarCarro(transaction, req, function (err, dados) {
+        function(callback) {
+            Repository.editarCarro(transaction, req, function(err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -110,8 +115,8 @@ function editar(req, res) {
             });
         },
 
-        function (dados, callback) {
-            Repository.deletarOpcional(transaction, req.params.id, function (err, dados) {
+        function(dados, callback) {
+            Repository.deletarOpcional(transaction, req.params.id, function(err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -119,9 +124,9 @@ function editar(req, res) {
             });
         },
 
-        function (dados, callback) {
+        function(dados, callback) {
             let promises = req.body.opcionais.map(opcional => new Promise((resolve, reject) => {
-                Repository.editarOpcionalCarro(transaction, req, opcional.opcional, function (err, dados) {
+                Repository.editarOpcionalCarro(transaction, req, opcional.opcional, function(err, dados) {
                     if (err)
                         reject(dados);
                     else
@@ -141,9 +146,9 @@ function editar(req, res) {
 
         }
 
-    ], function (err, dados) {
+    ], function(err, dados) {
         if (err) {
-            transaction.rollback(function (erro) {
+            transaction.rollback(function(erro) {
                 if (erro)
                     console.log('Erro Rollback: ' + erro);
                 else
@@ -151,7 +156,7 @@ function editar(req, res) {
             });
         }
         else {
-            transaction.commit(function (erro) {
+            transaction.commit(function(erro) {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
@@ -167,13 +172,17 @@ function editar(req, res) {
 
 
 
+
+
+
 function deletar(req, res) {
-    conn = sql.connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
-        function (callback) {
-            transaction.begin(function (err) {
+        function(callback) {
+            transaction.begin(function(err) {
                 if (err)
                     callback(err);
                 else
@@ -181,8 +190,8 @@ function deletar(req, res) {
             });
         },
 
-        function (callback) {
-            Repository.deletarOpcional(transaction, req.params.id, function (err, dados) {
+        function(callback) {
+            Repository.deletarOpcional(transaction, req.params.id, function(err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -190,8 +199,8 @@ function deletar(req, res) {
             });
         },
 
-        function (dados, callback) {
-            Repository.deletarCarro(transaction, req.params.id, function (err, dados) {
+        function(dados, callback) {
+            Repository.deletarCarro(transaction, req.params.id, function(err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -199,9 +208,9 @@ function deletar(req, res) {
             });
         },
 
-    ], function (err, dados) {
+    ], function(err, dados) {
         if (err) {
-            transaction.rollback(function (erro) {
+            transaction.rollback(function(erro) {
                 if (erro) {
                     console.log('Erro Rollback: ' + erro);
                     res.status(err).json(dados);
@@ -213,7 +222,7 @@ function deletar(req, res) {
             });
         }
         else {
-            transaction.commit(function (erro) {
+            transaction.commit(function(erro) {
                 if (erro) {
                     console.log('Erro Commit: ' + erro);
                     res.status(500).json(dados);
@@ -232,8 +241,11 @@ function deletar(req, res) {
 
 
 
+
+
+
 function selecionar(req, res) {
-    Repository.selecionarCarro(req, function (err, dados) {
+    Repository.selecionarCarro(req.query, function(err, dados) {
         if (err)
             res.status(err).json(dados);
         else
@@ -246,8 +258,11 @@ function selecionar(req, res) {
 
 
 
-function procurarCarro(req, res) {
-    Repository.procurarCarro(req.query, function (erro, dados) {
+
+
+
+function buscar(req, res) {
+    Repository.buscar(req.params, function(err, dados) {
         if (err)
             res.status(err).json(dados);
         else

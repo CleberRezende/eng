@@ -21,8 +21,11 @@ module.exports = {
 
 function criarCliente(transaction, req, callback) {
     new sql.Request(transaction)
-        .input('nome_váriavel', req.body.nome)
-        .execute('nome_proc', function (err, returnValue) {
+        .input('NOME', req.body.nome)
+        .input('CPF', req.body.cpf)
+        .input('SEXO', req.body.sexo)
+        .input('ID_CARRO', req.params.id)
+        .execute('SP_CRIAR_CLIENTE', function (err, dados, returnValue) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Criar Cliente' }, null);
             else
@@ -35,10 +38,14 @@ function criarCliente(transaction, req, callback) {
 
 
 
-function criarEndereco(transaction, id, req, callback) {
+function criarEndereco(transaction, idCliente, req, callback) {
     new sql.Request(transaction)
-        .input('nome_váriavel', req.body.nome)
-        .execute('nome_proc', function (err, dados) {
+        .input('RUA', req.body.rua)
+        .input('BAIRRO', req.body.bairro)
+        .input('CEP', req.body.cep)
+        .input('COMPLEMENTO', req.body.complemento)
+        .input('ID_CLIENTE', idCliente)
+        .execute('SP_CRIAR_ENDERECO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Criar Endereco Cliente' });
             else
@@ -51,10 +58,11 @@ function criarEndereco(transaction, id, req, callback) {
 
 
 
-function criarTelefone(transaction, id, req, callback) {
+function criarTelefone(transaction, idCliente, req, callback) {
     new sql.Request(transaction)
-        .input('nome_váriavel', req.body.telefone)
-        .execute('nome_proc', function (err, dados) {
+        .input('ID_CODIGO', idCliente)
+        .input('TELEFONE', req.body.telefone)
+        .execute('SP_CRIAR_TELEFONE', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Criar Telefone Cliente' });
             else
@@ -70,7 +78,10 @@ function criarTelefone(transaction, id, req, callback) {
 function editarCliente(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .input('NOME', req.body.nome)
+        .input('CPF', req.body.cpf)
+        .input('SEXO', req.body.sexo)
+        .execute('SP_EDITAR_CLIENTE', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Editar Cliente' });
             else
@@ -85,7 +96,11 @@ function editarCliente(transaction, req, callback) {
 function editarEndereco(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err) {
+        .input('RUA', req.body.rua)
+        .input('BAIRRO', req.body.bairro)
+        .input('CEP', req.body.cep)
+        .input('COMPLEMENTO', req.body.complemento)
+        .execute('SP_EDITAR_ENDERECO', function (err) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Editar Endereco Cliente' });
             else
@@ -101,7 +116,8 @@ function editarEndereco(transaction, req, callback) {
 function editarTelefone(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .input('TELEFONE', req.body.telefone)
+        .execute('SP_EDITAR_TELEFONE', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Editar Telefone Cliente' });
             else
@@ -116,7 +132,7 @@ function editarTelefone(transaction, req, callback) {
 function deletarCliente(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .execute('SP_EXCLUIR_CLIENTE', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Excluir Cliente' });
             else
@@ -132,7 +148,7 @@ function deletarCliente(transaction, req, callback) {
 function deletarEndereco(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .execute('SP_EXCLUIR_ENDERECO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Endereco Cliente' });
             else
@@ -149,7 +165,7 @@ function deletarEndereco(transaction, req, callback) {
 function deletarTelefone(transaction, req, callback) {
     new sql.Request(transaction)
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .execute('SP_EXCLUIR_TELEFONE', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Telefone Cliente' });
             else
@@ -163,13 +179,16 @@ function deletarTelefone(transaction, req, callback) {
 
 
 function selecionarCliente(req, callback) {
-    new sql.Request()
-        .execute('nome_proc', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao selecionar Cliente' });
-            else
-                callback(null, { informacao: 'Cliente Selecionado Com Sucesso' });
-        });
+
+    sql.connect(config).then(function () {
+        new sql.Request()
+            .execute('SP_SELECIONAR_CLIENTE', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao selecionar Cliente' });
+                else
+                    callback(null, { informacao: 'Cliente Selecionado Com Sucesso' });
+            });
+    });
 }
 
 

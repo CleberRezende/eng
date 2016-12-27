@@ -3,8 +3,7 @@ const Repository = require('./clienteRepository.js'),
     config = require('../conectarBanco/config.js'),
     waterfall = require('async-waterfall');
 
-var transaction,
-    conn;
+
 
 module.exports = {
     criar,
@@ -21,8 +20,11 @@ module.exports = {
 
 
 function criar(req, res) {
-    conn = connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
+
+    var idCliente;
 
     waterfall([
 
@@ -36,25 +38,27 @@ function criar(req, res) {
         },
 
         function (callback) {
-            Repository.criarCliente(transaction, req, function (err, dados, id) {
+            Repository.criarCliente(transaction, req,  function (err, dados, id) {
                 if (err)
                     callback(err, dados);
-                else
-                    callback(null, id, dados);
+                else{
+                    idCliente = id;
+                    callback(null, dados);
+                }
             });
         },
 
-        function (id, dados, callback) {
-            Repository.criarEndereco(transaction, id, req, function (err, dados, id) {
+        function (dados, callback) {
+            Repository.criarEndereco(transaction, idCliente, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
-                    callback(null, id, dados);
+                    callback(null, dados);
             });
         },
 
-        function (id, dados, callback) {
-            Repository.criarTelefone(transaction, id, req, function (err, dados, id) {
+        function (dados, callback) {
+            Repository.criarTelefone(transaction, idCliente, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
@@ -63,7 +67,7 @@ function criar(req, res) {
         },
 
 
-    ], function (err, dado) {
+    ], function (err, dados) {
         if (err) {
             transaction.rollback(function (erro) {
                 if (erro)
@@ -93,7 +97,8 @@ function criar(req, res) {
 
 
 function editar(req, res) {
-    conn = sql.connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
@@ -116,7 +121,7 @@ function editar(req, res) {
             });
         },
 
-        function (err, dados) {
+        function (dados, callback) {
             Repository.editarEndereco(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, { informacao: 'Erro Ao Editar Endereco Cliente' });
@@ -125,7 +130,7 @@ function editar(req, res) {
             });
         },
 
-        function (err, dados) {
+        function (dados, callback) {
             Repository.editarTelefone(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, { informacao: 'Erro Ao Editar Telefone Cliente' });
@@ -163,7 +168,8 @@ function editar(req, res) {
 
 
 function deletar(req, res) {
-    conn = sql.connect(config).then(
+    var transaction;
+    var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
 
     waterfall([
@@ -178,15 +184,6 @@ function deletar(req, res) {
         },
 
         function (callback) {
-            Repository.deletarCliente(transaction, req, function (err, dados) {
-                if (err)
-                    callback(err, dados);
-                else
-                    callback(null, dados);
-            });
-        },
-
-        function (callback) {
             Repository.deletarEndereco(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
@@ -195,8 +192,17 @@ function deletar(req, res) {
             });
         },
 
-        function (callback) {
+        function (dados, callback) {
             Repository.deletarTelefone(transaction, req, function (err, dados) {
+                if (err)
+                    callback(err, dados);
+                else
+                    callback(null, dados);
+            });
+        },
+
+        function (dados, callback) {
+            Repository.deletarCliente(transaction, req, function (err, dados) {
                 if (err)
                     callback(err, dados);
                 else
