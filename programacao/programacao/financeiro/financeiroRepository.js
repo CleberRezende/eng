@@ -82,7 +82,7 @@ function deletarFinanceiro(req, callback) {
 
 function selecionarFinanceiro(req, callback) {
     new sql.Request()
-        .execute('nome_proc', function (err, dados) {
+        .execute('SP_SELECIONAR_FINANCEIRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Selecionar Financeiro' });
             else
@@ -99,7 +99,7 @@ function selecionarFinanceiro(req, callback) {
 function buscarFinanceiro(req, callback) {
     new sql.Request()
         .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .execute('SP_BUSCAR_FINANCEIRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Buscar Financeiro' });
 
