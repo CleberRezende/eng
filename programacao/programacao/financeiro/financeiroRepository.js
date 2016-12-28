@@ -12,15 +12,21 @@ module.exports = {
 
 
 
-function criarFinanceiro(req, callback) {
-    new sql.Request()
-        .input('nome_váriavel', req.body.nome)
-        .execute('nome_proc', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao Criar Financeiro' });
-            else
-                callback(null, { informacao: 'Financeiro Criado Com Sucesso' });
-        });
+function criarFinanceiro(req, valorParcela, percentual, callback) {
+    var conn = sql.connect(config).then(function () {
+        new sql.Request()
+            .input('VALOR', valorParcela)
+            .input('PARCELAS', req.body.parcelas)
+            .input('PERCENTUAL', percentual)
+            .input('VENCIMENTO', req.body.vencimento)
+            .input('ID', req.params.id)
+            .execute('SP_CRIAR_FINANCEIRO', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao Criar Financeiro' });
+                else
+                    callback(null, { informacao: 'Financeiro Criado Com Sucesso' });
+            });
+    });
 }
 
 
@@ -30,15 +36,21 @@ function criarFinanceiro(req, callback) {
 
 
 
-function editarFinanceiro(req, callback) {
-    new sql.Request()
-        .input('nome_váriavel', req.body.nome)
-        .execute('nome_proc', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao Editar Financeiro' });
-            else
-                callback(null, { informacao: 'Editar Financeiro Com Sucesso' });
-        });
+function editarFinanceiro(req, valorParcela, percentual, callback) {
+    var conn = sql.connect(config).then(function () {
+        new sql.Request()
+            .input('ID', req.params.id)
+            .input('VALOR', valorParcela)
+            .input('PARCELAS', req.body.parcelas)
+            .input('PERCENTUAL', percentual)
+            .input('VENCIMENTO', req.body.vencimento)
+            .execute('SP_EDITAR_FINANCEIRO', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao Criar Financeiro' });
+                else
+                    callback(null, { informacao: 'Financeiro Criado Com Sucesso' });
+            });
+    });
 }
 
 
@@ -49,14 +61,16 @@ function editarFinanceiro(req, callback) {
 
 
 function deletarFinanceiro(req, callback) {
+    var conn = sql.connect(config).then(function () {
     new sql.Request()
-        .input('nome_váriavel', req.params.id)
-        .execute('nome_proc', function (err, dados) {
+        .input('ID', req.params.id)
+        .execute('SP_EXCLUIR_FINANCEIRO', function (err, dados) {
             if (err)
                 callback(500, { informacao: 'Erro Ao Deletar Financeiro' });
             else
                 callback(null, { informacao: 'Financeiro Deletado Com Sucesso' });
         });
+    });
 }
 
 

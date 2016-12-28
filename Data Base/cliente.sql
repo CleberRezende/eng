@@ -1,12 +1,25 @@
 -- tb_CLIENTE
 
-
+/*
 USE db_CARRO
 
 
 RETURN SCOPE_IDENTITY()
 
+{
+	"nome":"Dona Creuza",
+	"cpf":"372.000.000-22",
+	"sexo":"FEMININO",
+	"rua":"Rua Da Dona Maria 22", 
+	"bairro":"Bairro Da Dona Maria 22",
+	"cep":"14000-022",
+	"complemento":"Complemento Da Dona Maria 22",
+	"telefone":"3404-2222"
+}
 
+
+
+*/
 -- CRIAR CLIENTE
 IF EXISTS (SELECT * FROM SYS.objects WHERE OBJECT_ID = OBJECT_ID(N'SP_CRIAR_CLIENTE'))
 	DROP PROCEDURE SP_CRIAR_CLIENTE
