@@ -1,0 +1,29 @@
+body{
+    padding: 20px;
+}
+
+.textoPrincipal{
+    text-align: center;
+    font-size: 50px;
+    color: #3F51B5;
+    font-family: 'Comic Sans MS';
+    padding-bottom: 30px;
+    padding-top: 20px;
+}
+
+.inputs{
+    padding-top: 10px;
+}
+
+.bordas{
+    border-color: red;
+}
+
+.checks{
+    padding-top: 45px;
+    padding-bottom: 45px;
+}
+
+.espaco{
+    margin-top: 45px;
+}
