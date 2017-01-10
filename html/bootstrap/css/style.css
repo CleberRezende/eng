@@ -1,5 +1,6 @@
 body{
     padding: 20px;
+    text-shadow: 2px 2px #FFF;
 }
 
 .textoPrincipal{
@@ -26,4 +27,28 @@ body{
 
 .espaco{
     margin-top: 45px;
+}
+
+.menu{
+    background-color: #3F51B5;
+}
+
+.wellPrincipal{
+    background-color: #7986CB;
+    color:#FFF;
+}
+
+.corpoBody{
+    background-color: #E8EAF6;
+}
+
+.error {
+    border-color: red;
+}
+
+.colorError{
+    background-color: #FF8A80;
+    color: #D50000;
+    text-shadow: none;
+    font-weight: bold;
 }

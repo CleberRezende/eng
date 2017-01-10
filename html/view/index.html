@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Cars</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/style.css">
+
+    <script type="application/javascript" src="../jquery/jquery.min.js"></script>
+    <script type="application/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="application/javascript" src="../angular/angular.min.js"></script>
+    <script type="application/javascript" src="../angular/angular-messages.min.js"></script>
+    <script type="application/javascript" src="../angular/angular-route.min.js"></script>
+    <script type="application/javascript" src="../angular/app.js"></script>
+</head>
+
+<body ng-app="app" class="well corpoBody">
+
+    <div ng-include="'menu.html'"></div>
+
+    <div ng-view></div>
+
+    <div ng-include="'footer.html'"></div>
+
+</body>
+
+</html>

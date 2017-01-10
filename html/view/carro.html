@@ -4,25 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Tech Cars</title>
-    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./bootstrap/css/style.css">
-    <script type="application/javascript" src="./bootstrap/jquery/jquery.min.js"></script>
-    <script type="application/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
-    <script type="application/javascript" src="./bootstrap/angular/angular.min.js"></script>
-    <script type="application/javascript" src="./bootstrap/angular/app.js"></script>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/style.css">
+    <script type="application/javascript" src="../bootstrap/jquery/jquery.min.js"></script>
+    <script type="application/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+
+    <script type="application/javascript" src="../angular/angular.min.js"></script>
+    <script type="application/javascript" src="../angular/angular-messages.min.js"></script>
+    <script type="application/javascript" src="../angular/angular-route.min.js"></script>
+    <script type="application/javascript" src="../angular/app.js"></script>
 
 
 
 </head>
 
-<body ng-app="app" class="well">
+<body ng-app="app" class="well corpoBody">
     <div class="container ">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
+        <nav class="navbar navbar-inverse menu">
+            <div class="container-fluid menu">
                 <div class="navbar-header navbar-brand">Inicio
-                    <!--<a class="navbar-brand" href="#">Inicio</a>-->
+                    <!-- <a class="navbar-brand" href="#">Inicio</a> -->
                 </div>
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav menu">
                     <li><a href="#">Carro</a></li>
                     <li><a href="#">Cliente</a></li>
                     <li><a href="#">Financeiro</a></li>
@@ -32,48 +35,68 @@
         </nav>
     </div>
 
+    <div ng-include="menu.html"></div>
+
     <div  ng-controller="carroCtrl" class="container">
-        <div class="textoPrincipal well well-sm">Cadastrar Carro</div>
+        <div class="textoPrincipal well well-sm wellPrincipal"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Cadastrar Carro</div>
+        
         <form name="formCadastroVeiculo">
+            <div ng-if="formCadastroVeiculo.inputModelo.$dirty" ng-messages="formCadastroVeiculo.inputModelo.$error">
+                <div ng-message="required" class="well colorError">Por favor, preencha as informações sobre o modelo do veículo.</div>
+                <div ng-message="invalid" class="well colorError">Por favor, informe mais de 4 letras.</div>
+                <div ng-message="minlength" class="well colorError">Por favor, informe no mínimo 4 letras.</div>
+                <div ng-message="maxlength" class="well colorError">Por favor, informe até 50 letras.</div>
+            </div>
+
+            <div ng-if="formCadastroVeiculo.valorVeiculo.$dirty" ng-messages="formCadastroVeiculo.valorVeiculo.$error">
+                <div ng-message="required" class="well colorError">Por favor, informe um valor.</div>
+                <div ng-message="pattern" class="well colorError">Por favor, informe o valor parecido com '99999,99'</div>
+            </div>
+
+<!--        Inputs informações Carro  ==================================================  -->
             <div class="row">
                 <div class="col-md-6 form-group inputs">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     <label for="modelo">Modelo</label>
-                    <input bg-blur ng-minlength="2" required type="text" class="form-control" id="" placeholder="Gol G5 1.6" >
+                    <input  app-blur ng-model="veiculo.modelo" type="text" class="form-control" name="inputModelo" ng-minlength="4" ng-maxlength="50" required placeholder="Gol G5 1.6">
                 </div>
 
                 <div class="col-md-6 inputs"> 
+                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
                     <label for="modelo">Marca do Veículo</label>
-                    <select class="form-control ">
-                        <option>Chevrolet</option>
-                        <option>Fiat</option>
-                        <option>Ford</option>
-                        <option>Honda</option>
-                        <option>Volkswagen</option>
+                    <select class="form-control">
+                        <option ng-model="veiculo.marca" ng-repeat="marca in marcas">{{marca}}</option>
                     </select>
                 </div>
             </div> <!-- FIM ROL 6 -->
             <div class="row">
                 <div class="col-md-4 inputs">
+                    <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
                     <label for="cor">Cor</label>
-                    <select class="form-control" ng-options="marca for marca in marcas" ng-model="selected"></select>
+                    <select class="form-control" ng-options="color for color in cores" ng-init="veiculo.cor = cores[0]" ng-model="veiculo.cor"></select>
                 </div>
 
                 <div class="col-md-4 inputs">
+                    <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
                     <label for="data">Ano do Veículo</label>
-                        <input type="date" class="form-control" required>
+                        <select class="form-control" name="" id="">
+                            <!--<input app-blur ng-model="veiculo.anoVeiculo" type="date" min="1930-01-01" max="2017-01-01" name="inputAnoVeiculo" class="form-control" required>-->
+                            <option app-blur ng-model="veiculo.anoCarro" ng-repeat="ano in anoVeiculo" required >{{ano}}</option>
+                        </select>
                 </div>
-
                 <div class="col-md-4 inputs">
+                    <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
                     <label for="valor">Valor do Veículo</label>
                     <div class="input-group">
                         <span class="input-group-addon">R$</span>
-                        <input ng-blur type="text" required class="form-control" placeholder="25000,00">
+                        <input app-blur ng-model="veiculo.valorVeiculo" type="text" class="form-control" ng-pattern="/^[0-9]{3,},[0-9]{2}$/" name="valorVeiculo" required validar-valor placeholder="25000,00">
                     </div>
                 </div>
             </div> <!-- FIM ROW 4 -->
 
             <hr>
 
+<!--        CheckBox's Opcionais Carro  =================================================  -->
             <div class="checks">
                 <div class="row inputs">
                     <div class="col-md-3 form-check form-check-inline">
@@ -155,25 +178,22 @@
 
             <hr>
 
+<!--        Importar foto  ==============================================================  -->
             <div class="form-group inputs">
                 <label for="exampleInputFile">Enviar Fotos</label>
                 <input type="file" id="exampleInputFile">
                 <p class="help-block inputs">Escolha algumas fotos do veículo </p>
             </div>
 
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"> ????
-                </label>
-            </div>
-
-            <button ng-disabled="formCadastroVeiculo.$invalid " type="submit" class="btn btn-primary espaco">Submit</button>
+             <button type="submit" class="btn btn-primary btn-lg espaco">Submit</button>
         
         </form>
 
     </div>
 
 
+
+<!--<div ng-view></div>-->
 
 
 </body>
