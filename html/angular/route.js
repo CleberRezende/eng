@@ -2,13 +2,13 @@
 angular.module('route', ['ngRoute'])
     .config(function ($routeProvider) {
         $routeProvider
-            .when('/index.html', {
+            .when('/index.html', {             // http://localhost:3000/api/
                 templateUrl: 'view/indexTest.html',
                 controller: 'routeCtrl',
                 controllerAs: 'routeCtrl'
             }) // FIM .when('/')
 
-            .when('/carros.html',{
+            .when('/carros.html', {             // http://localhost:3000/api/carro/
                 templateUrl: 'view/carroCadastrar.html',
                 controller: 'routeCtrl',
                 controlerAs: 'routeCtrl'
@@ -18,3 +18,8 @@ angular.module('route', ['ngRoute'])
                 redirecTo: '/index'
             });
     }); // FIM .config(function($routeProvider)
+
+
+
+
+

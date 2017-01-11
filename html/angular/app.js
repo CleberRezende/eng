@@ -4,11 +4,12 @@ angular.module('app', ['ngMessages']);
 angular.module('app').controller('carroCtrl', carroCtrl);
 carroCtrl.$inject = ['$scope'];
 
-angular.module('app').controller('apiHttpCtrl', apiHttpCtrl);
+// angular.module('app').controller('apiHttpCtrl', apiHttpCtrl);
 // apiHttp.$inject = ['$scope'];
 
-function carroCtrl($scope) {
+carregarTelaCadastrarCarro();
 
+function carroCtrl($scope) {
 // Opções de Cores do Carro
     $scope.cores = [
         "Azul",
@@ -57,22 +58,5 @@ function carroCtrl($scope) {
 } // carroCtrl($scope)
 
 
-function apiHttpCtrl($http){
-    var api = this;
-    const url = 'http://localhost:3000/api/cadastrar-carro' + carro;
-    const method = 'POST';
-    $http({
-        url: url,
-        method: method 
-    })
 
-    .success(function(data){
-        console.log('Dados: ' + data);
-    })
-
-    .error(function(err){
-        console.log('Erro: ' + err);
-    })
-
-} // apiHttpCtrl($http)
 

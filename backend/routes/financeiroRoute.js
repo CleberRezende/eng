@@ -1,4 +1,4 @@
-const financeiro = require('../programacao/financeiro/financeiroController.js');
+const financeiro = require('../core/financeiro/financeiroController.js');
 
 module.exports = function(app){
 

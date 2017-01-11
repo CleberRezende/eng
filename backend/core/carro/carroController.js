@@ -11,10 +11,14 @@ module.exports = {
     editar,
     deletar,
     selecionar,
-    buscar
+    buscar,
+    paginaTeste
 };
 
-
+function paginaTeste(req,res){
+    res.render('/indexConteudo');
+    res.end();
+}
 
 
 function criar(req, res) {
@@ -69,7 +73,7 @@ function criar(req, res) {
                 if (erro)
                     console.log('Erro Rollback: ' + erro);
                 else
-                    res.status(err).json(dados);
+                    res.render('/index').status(err).json(dados);
             });
         }
         else {

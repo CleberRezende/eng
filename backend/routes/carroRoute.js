@@ -1,4 +1,4 @@
-const carro = require('../programacao/carro/carroController.js');
+const carro = require('../core/carro/carroController.js');
 
 module.exports = function (app) {
 
@@ -11,4 +11,4 @@ module.exports = function (app) {
         .delete(carro.deletar)
         .get(carro.buscar);
 
-};
+}; 
