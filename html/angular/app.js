@@ -1,25 +1,15 @@
 
-angular.module('app', ['ngMessages', 'ngRoute']);
+angular.module('app', ['ngMessages']);
 
 angular.module('app').controller('carroCtrl', carroCtrl);
-
-
 carroCtrl.$inject = ['$scope'];
+
+angular.module('app').controller('apiHttpCtrl', apiHttpCtrl);
+// apiHttp.$inject = ['$scope'];
 
 function carroCtrl($scope) {
 
-    $scope.ocorrencias = [];
-
-    $scope.urls = [
-        { url: 'view/index.html' },
-        { url: 'view/footer.html' }
-    ];
-
-
-    $scope.cadastrarZumbi = function (ocorrencia) {
-        $scope.ocorrencias.push(angular.copy(ocorrencia));
-    };
-
+// Opções de Cores do Carro
     $scope.cores = [
         "Azul",
         "Branco",
@@ -28,6 +18,7 @@ function carroCtrl($scope) {
         "Vermelho"
     ];
 
+// Opções de Marcas de Carro
     $scope.marcas = [
         "Chevrolet",
         "Fiat",
@@ -36,6 +27,7 @@ function carroCtrl($scope) {
         "Volkswagen"
     ];
 
+// Opções de Opcionais de Carro
     $scope.opcionaisCarro = [
         "Ar Condicionado",
         "Alarme",
@@ -51,72 +43,36 @@ function carroCtrl($scope) {
         "Opcional 02"
     ];
 
-
+// Opções de Ano de Carro
     $scope.anoVeiculo = [];
-
     $scope.calcularAnoVeiculo = function () {
         var ano = 2000;
         var hoje = new Date();
         var anoAtual = hoje.getFullYear();
         for (i = ano; i <= anoAtual; i++) {
-            // if (ano <= anoAtual) {
             $scope.anoVeiculo.push(angular.copy(i));
-            // }
         }
-
     };
-
     $scope.calcularAnoVeiculo();
-
-}
-
-
-angular.module('app').directive('appBlur', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function ($scope, $element, $attrs, ngModel) {
-            $element.on('blur', function () {
-                if (ngModel.$invalid && ngModel.$dirty) {
-                    $element.addClass('error');
-                }
-                else {
-                    $element.removeClass('error');
-                }
-            }); // FIM $element.on
-        } // FIM Link
-    }; // FIM RETURN
-}); // FIM angular.module('app').directive('ngBlur' ...
+} // carroCtrl($scope)
 
 
+function apiHttpCtrl($http){
+    var api = this;
+    const url = 'http://localhost:3000/api/cadastrar-carro' + carro;
+    const method = 'POST';
+    $http({
+        url: url,
+        method: method 
+    })
 
-angular.module('app').directive('validarValor', function () {
-    return {
-        require: 'ngModel',
-        link: function (scope, element, attrs, ctrl) {
+    .success(function(data){
+        console.log('Dados: ' + data);
+    })
 
-            var _formatValorCarro = function (valor) {
-                if (valor.length > 2) {
-                    var valorFormatado = valor.replace(",", "");
-                    total = valor.length;
-                    final = total - 3;
-                    console.log("final" + final);
-                    resultado = (valorFormatado.substring(0, final) + "," + valorFormatado.substring(final, total));
-                    return resultado;
-                }
-                else {
-                    return valor;
-                }
-            };
+    .error(function(err){
+        console.log('Erro: ' + err);
+    })
 
-            element.bind("keyup", function () {
-                ctrl.$setViewValue(_formatValorCarro(ctrl.$viewValue));
-                ctrl.$render();
-            });
-
-        } // FIM Link
-    }; // FIM RETURN
-});// FIM angular.module('app').directive('validarValor' ...
-
-
+} // apiHttpCtrl($http)
 
