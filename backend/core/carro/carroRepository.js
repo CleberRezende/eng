@@ -193,7 +193,7 @@ function selecionarCarro(query, callback) {
                 if (err)
                     callback(500, { informacao: 'Erro Ao Buscar Carro' });
                 else
-                    callback(null, { informacao: 'Carro Buscado Com Sucesso' });
+                    callback(null, dados);
             });
     });
 }

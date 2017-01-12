@@ -20,7 +20,200 @@
 
     <div ng-include="'menu.html'"></div>
 
-    <div ng-view></div>
+    <!--<div ng-view></div>-->
+
+    <div ng-controller="carroCtrl" class="container">
+    <div class="textoPrincipal well well-sm wellPrincipal"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Cadastrar Carro</div>
+
+    <form name="formCadastroVeiculo">
+        <div ng-if="formCadastroVeiculo.inputModelo.$dirty" ng-messages="formCadastroVeiculo.inputModelo.$error">
+            <div ng-message="required" class="well colorError">Por favor, preencha as informações sobre o modelo do Veículo.</div>
+            <div ng-message="invalid" class="well colorError">Por favor, informe mais de 4 letras.</div>
+            <div ng-message="minlength" class="well colorError">Por favor, informe no mínimo 4 letras.</div>
+            <div ng-message="maxlength" class="well colorError">Por favor, informe até 50 letras.</div>
+        </div>
+
+        <div ng-if="formCadastroVeiculo.valorVeiculo.$dirty" ng-messages="formCadastroVeiculo.valorVeiculo.$error">
+            <div ng-message="required" class="well colorError">Por favor, informe um valor.</div>
+            <div ng-message="pattern" class="well colorError">Por favor, informe o valor parecido com '99999,99'</div>
+        </div>
+
+        <!--        Inputs informações Carro  ==================================================  -->
+        <div class="row">
+            <div class="col-md-6 form-group inputs">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <label for="modelo">Modelo</label>
+                <input app-blur ng-model="veiculo.modelo" type="text" class="form-control" name="inputModelo" ng-minlength="4" ng-maxlength="50"
+                    required placeholder="Gol G5 1.6">
+            </div>
+
+            <div class="col-md-6 inputs">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                <label for="modelo">Marca do Veículo</label>
+                <select class="form-control">
+                        <option ng-model="veiculo.marca" ng-repeat="marca in marcas">{{marca}}</option>
+                    </select>
+            </div>
+        </div>
+        <!-- FIM ROL 6 -->
+        <div class="row">
+            <div class="col-md-4 inputs">
+                <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
+                <label for="cor">Cor</label>
+                <select class="form-control" ng-options="color for color in cores" ng-init="veiculo.cor = cores[0]" ng-model="veiculo.cor"></select>
+            </div>
+
+            <div class="col-md-4 inputs">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                <label for="data">Ano do Veículo</label>
+                <select class="form-control" name="" id="">
+                            <!--<input app-blur ng-model="veiculo.anoVeiculo" type="date" min="1930-01-01" max="2017-01-01" name="inputAnoVeiculo" class="form-control" required>-->
+                            <option app-blur ng-model="veiculo.anoCarro" ng-repeat="ano in anoVeiculo" required >{{ano}}</option>
+                        </select>
+            </div>
+            <div class="col-md-4 inputs">
+                <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                <label for="valor">Valor do Veículo</label>
+                <div class="input-group">
+                    <span class="input-group-addon">R$</span>
+                    <input app-blur ng-model="veiculo.valorVeiculo" type="text" class="form-control" ng-pattern="/^[0-9]{3,},[0-9]{2}$/" name="valorVeiculo"
+                        required validar-valor placeholder="25000,00">
+                </div>
+            </div>
+        </div>
+        <!-- FIM ROW 4 -->
+
+        <hr>
+
+        <!--        CheckBox's Opcionais Carro  =================================================  -->
+        <div class="checks">
+            <div class="row inputs">
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="opcionaisCarro"> Ar Condicionado
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="opcionaisCarro"> Alarme
+                        </label>
+                </div>
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Vidro El�trico
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Trava
+                        </label>
+                </div>
+            </div>
+            <!-- FIM ROW -->
+
+
+            <div class="row inputs">
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="opcionaisCarro"> Roda Liga
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="opcionaisCarro"> Farol de Milha
+                        </label>
+                </div>
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Banco de Couro
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Freio Abs
+                        </label>
+                </div>
+            </div>
+            <!-- FIM ROW -->
+
+
+            <div class="row inputs">
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="opcionaisCarro"> Autom�tico
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="opcionaisCarro"> Mec�nico
+                        </label>
+                </div>
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Opcional 01
+                        </label>
+                </div>
+
+                <div class="col-md-3 form-check form-check-inline disabled">
+                    <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="opcionaisCarro"> Opcional 02
+                        </label>
+                </div>
+            </div>
+            <!-- FIM ROW -->
+        </div>
+        <!-- FIM DIV CheckBox -->
+
+        <hr>
+
+        <!--        Importar foto  ==============================================================  -->
+        <div class="form-group inputs">
+            <label for="exampleInputFile">Enviar Fotos</label>
+            <input type="file" id="exampleInputFile">
+            <p class="help-block inputs">Escolha algumas fotos do Veículo </p>
+        </div>
+        <!-- FIM Importar foto -->
+
+        <button type="submit" class="btn btn-primary btn-lg espaco">Submit</button>
+
+    </form>
+
+    <br>
+    <br>
+
+    <div ng-controller="apiCarroCtrl" class="container">
+        <header>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>Marca</th>
+                        <th>Cor</th>
+                        <th>Ano</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>listaCarro-modelo </td>
+                        <td>listaCarro-marca</td>
+                        <td>listaCarro-cor</td>
+                        <td>listaCarro-ano</td>
+                        <td>listaCarro-preco</td>
+                    </tr>
+                </tbody>
+            </table>
+        </header>
+    </div>
+
+    </div>
+
+</div>
 
     <div ng-include="'footer.html'"></div>
 

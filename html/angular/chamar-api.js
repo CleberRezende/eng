@@ -10,6 +10,12 @@
 //     });
 // }
 
+angular.module('app', ['ngMessages']);
+
+angular.module('app').controller('apiCarroCtrl', apiCarroCtrl);
+apiCarroCtrl.$inject = ['$scope'];
+
+
 function cadastrarCarro($http){
     $http({
         method: 'POST',
@@ -34,19 +40,31 @@ function cadastrarCarro($http){
 
 
 
+
+
+
+
+
+
 function listarCarro($http){
     $http({
         method: 'GET',
         url: 'http://localhost:3000/api/carro/'
     })
     .then(function successCallback(response){
-        console.log('Página cadastrar carro: - ' + response);
+        console.log('Chamar-Api GET: - ' + response);
     }, // FIM .then successCallback
     function errorCallback(error){
         console.log('Erro ao carregar página cadastrar carro');
     }); // FIM errorCallback
     // FIM $http
 }
+
+
+
+
+
+
 
 
 
@@ -71,6 +89,13 @@ function editarCarro($http){
     }); // FIM errorCallback
     // FIM $http
 }
+
+
+
+
+
+
+
 
 
 

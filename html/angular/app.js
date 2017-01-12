@@ -9,7 +9,7 @@ carroCtrl.$inject = ['$scope'];
 
 carregarTelaCadastrarCarro();
 
-function carroCtrl($scope) {
+function carroCtrl($scope, $http) {
 // Opções de Cores do Carro
     $scope.cores = [
         "Azul",
