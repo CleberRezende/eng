@@ -6,7 +6,7 @@ const Repository = require('./clienteRepository.js'),
 
 
 module.exports = {
-    criar,
+    // criar,
     editar,
     deletar,
     selecionar,
@@ -18,8 +18,7 @@ module.exports = {
 
 
 
-
-function criar(req, res) {
+const criar = (req, res) => {
     var transaction;
     var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));

@@ -3,8 +3,8 @@ const carro = require('../core/carro/carroController.js');
 module.exports = function (app) {
 
     app.route('/api/carro/')
-        .post(carro.criar)
-        .get(carro.selecionar);
+        .get(carro.selecionar)
+        .post(carro.criar);
 
     app.route('/api/carro/:id')
         .put(carro.editar)

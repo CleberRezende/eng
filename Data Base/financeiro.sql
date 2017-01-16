@@ -169,3 +169,14 @@ BEGIN
 	WHERE CLI.CLI_CODIGO = @ID
 
 END
+
+
+
+/*
+{
+	"parcelas":60,
+	"preco":"60000",
+	"entrada":"15000",
+	"vencimento":"15"
+}
+*/

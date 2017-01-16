@@ -12,13 +12,8 @@ module.exports = {
     deletar,
     selecionar,
     buscar,
-    paginaTeste
 };
 
-function paginaTeste(req,res){
-    res.render('/indexConteudo');
-    res.end();
-}
 
 
 function criar(req, res) {
@@ -58,7 +53,7 @@ function criar(req, res) {
 
 
             Promise.all(promises).then(() => {
-                callback(null);
+                callback(null, null, idCarro);
             }, (err) => {
                 callback(500, dados);
             }
@@ -67,13 +62,13 @@ function criar(req, res) {
 
         } // FIM FUNCTION
 
-    ], function(err, dados) {
+    ], function(err, dados, idCarro) {
         if (err) {
             transaction.rollback(function(erro) {
                 if (erro)
                     console.log('Erro Rollback: ' + erro);
                 else
-                    res.render('/index').status(err).json(dados);
+                    res.status(err).json(dados);
             });
         }
         else {
@@ -81,8 +76,8 @@ function criar(req, res) {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
-                    console.log('Carro e Opcional Cadastrado Com Sucesso: ');
-                res.status(200).json(dados);
+                    //console.log('Carro e Opcional Cadastrado Com Sucesso: ');
+                    res.status(200).json({id: idCarro});
             });
         }
     });// FIM WATERFALL
@@ -232,7 +227,7 @@ function deletar(req, res) {
                     res.status(500).json(dados);
                 }
                 else {
-                    console.log('Commit OK');
+                    //console.log('Commit OK');
                     res.status(200).json(dados);
                 }
             });
@@ -271,5 +266,5 @@ function buscar(req, res) {
             res.status(err).json(dados);
         else
             res.status(200).json(dados);
-    });
+    }); // Repository
 } // FIM FUNCTION BUSCAR

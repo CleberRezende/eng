@@ -141,8 +141,11 @@ function deletarCarro(transaction, id, callback) {
     new sql.Request(transaction)
         .input('ID', id)
         .execute('SP_DELETAR_CARRO', function (err) {
-            if (err)
+            if (err){
+                console.log('error deletar carro: ', err);
                 callback(500, { informacao: 'Erro Ao Deletar Carro' });
+
+            }
             else
                 callback(null, { informacao: 'Carro Deletado Com Sucesso' });
         });
@@ -162,10 +165,14 @@ function deletarOpcional(transaction, id, callback) {
     new sql.Request(transaction)
         .input('ID', id)
         .execute('SP_DELETAR_OPCINAL_CARRO', function (err, dados) {
-            if (err)
+            if (err){
+                console.log('Erro opcional: ' , err);
                 callback(500, { informacao: 'Erro Ao Deletar Opcionais' });
-            else
+            }
+            else{
+                console.log('sucesso del opcional: ');
                 callback(null, { informacao: 'Carro Opcionais Deletados Com Sucesso' });
+            }
         });
 }
 
@@ -183,17 +190,19 @@ function deletarOpcional(transaction, id, callback) {
 function selecionarCarro(query, callback) {
     sql.connect(config).then(function () {
         new sql.Request()
-            .input('MARCA', query.marca)
-            .input('MODELO', query.modelo)
-            .input('COR', query.cor)
-            .input('ANO', query.ano)
-            .input('PRECO', query.preco)
-            .input('DESCRICAO', query.descricao)
+            // .input('MARCA', query.marca)
+            // .input('MODELO', query.modelo)
+            // .input('COR', query.cor)
+            // .input('ANO', query.ano)
+            // .input('PRECO', query.preco)
+            // .input('DESCRICAO', query.descricao)
             .execute('SP_PROCURAR_CARRO', function (err, dados) {
                 if (err)
                     callback(500, { informacao: 'Erro Ao Buscar Carro' });
-                else
+                else{
+                    console.log('sucesso del carro: ');
                     callback(null, dados);
+                }
             });
     });
 }
