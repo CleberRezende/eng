@@ -10,5 +10,4 @@ module.exports = function(app){
         .put(financeiro.editar)
         .delete(financeiro.deletar)
         .get(financeiro.buscar);
-
 };
