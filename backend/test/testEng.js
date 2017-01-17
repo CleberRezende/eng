@@ -110,3 +110,21 @@ describe('3 - Iniciando teste funcionalidade.: Departamento', function () {
     });
 });
 //endregion
+
+
+/*
+idmetodo - idfuncionalidade - metodo - rota - verbo - requerchecagem
+ 59	16	acionar	/public/ping	get	N
+ 62	17	inserirOperadora	/operadora	post	S
+ 61	17	listarOperadora	/operadora	get	S
+ 63	17	listarOperadoraPorId	/operadora/:idOperadora	get	S
+ 64	17	atualizarOperadora	/operadora/:idOperadora	put	S
+ 19	4	excluirCluster	/cluster/:idCluster	delete	S
+ 7	3	login	/public/login	post	N
+ 51	3	listarDadosLogon	/public/login/:login	get	N
+ 52	3	refazLogin	/refazLogin	get	N
+ 54	15	listarFuncionario	/funcionario	get	S
+ 55	15	inserirFuncionario	/funcionario	post	S
+
+
+*/
