@@ -4,9 +4,8 @@ const Repository = require('./clienteRepository.js'),
     waterfall = require('async-waterfall');
 
 
-
 module.exports = {
-    // criar,
+    criar,
     editar,
     deletar,
     selecionar,
@@ -14,11 +13,7 @@ module.exports = {
 };
 
 
-
-
-
-
-const criar = (req, res) => {
+function criar(req, res) {
     var transaction;
     var conn = sql.connect(config).then(
         transaction = new sql.Transaction(conn));
@@ -37,10 +32,10 @@ const criar = (req, res) => {
         },
 
         function (callback) {
-            Repository.criarCliente(transaction, req,  function (err, dados, id) {
+            Repository.criarCliente(transaction, req, function (err, dados, id) {
                 if (err)
                     callback(err, dados);
-                else{
+                else {
                     idCliente = id;
                     callback(null, dados);
                 }
@@ -80,19 +75,11 @@ const criar = (req, res) => {
                 if (erro)
                     console.log('Erro Commited: ' + erro);
                 else
-                    res.status(200).json(dados);
+                    res.status(200).json({id:idCliente});
             });
         }
     }); // FIM WATERFALL
 } // FIM CRIAR
-
-
-
-
-
-
-
-
 
 
 function editar(req, res) {
@@ -114,27 +101,27 @@ function editar(req, res) {
         function (callback) {
             Repository.editarCliente(transaction, req, function (err, dados) {
                 if (err)
-                    callback(err, { informacao: 'Erro Ao Editar Cliente' });
+                    callback(err, {informacao: 'Erro Ao Editar Cliente'});
                 else
-                    callback(null, { informacao: 'Cliente Editado Com Sucesso' });
+                    callback(null, {informacao: 'Cliente Editado Com Sucesso'});
             });
         },
 
         function (dados, callback) {
             Repository.editarEndereco(transaction, req, function (err, dados) {
                 if (err)
-                    callback(err, { informacao: 'Erro Ao Editar Endereco Cliente' });
+                    callback(err, {informacao: 'Erro Ao Editar Endereco Cliente'});
                 else
-                    callback(null, { informacao: 'Telefone Cliente Editado Com Sucesso' });
+                    callback(null, {informacao: 'Telefone Cliente Editado Com Sucesso'});
             });
         },
 
         function (dados, callback) {
             Repository.editarTelefone(transaction, req, function (err, dados) {
                 if (err)
-                    callback(err, { informacao: 'Erro Ao Editar Telefone Cliente' });
+                    callback(err, {informacao: 'Erro Ao Editar Telefone Cliente'});
                 else
-                    callback(null, { informacao: 'Telefone Cliente Editado Com Sucesso' });
+                    callback(null, {informacao: 'Telefone Cliente Editado Com Sucesso'});
             });
         }
 
@@ -157,13 +144,6 @@ function editar(req, res) {
         }
     }); // FIM WATERFALL
 }
-
-
-
-
-
-
-
 
 
 function deletar(req, res) {
@@ -230,14 +210,6 @@ function deletar(req, res) {
 } // FIM DELETAR
 
 
-
-
-
-
-
-
-
-
 function selecionar(req, res) {
     Repository.selecionarCliente(req, function (err, dados) {
         if (err)
@@ -248,16 +220,8 @@ function selecionar(req, res) {
 } // FIM SELECIONAR
 
 
-
-
-
-
-
-
-
-
 function buscar(req, res) {
-    Repository.buscarCliente(req, function (err, dados) {
+    Repository.buscarCliente(req, function (err, informacao, dados) {
         if (err)
             res.status(err).json(dados);
         else

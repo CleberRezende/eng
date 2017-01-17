@@ -144,7 +144,6 @@ function deletarCarro(transaction, id, callback) {
             if (err){
                 console.log('error deletar carro: ', err);
                 callback(500, { informacao: 'Erro Ao Deletar Carro' });
-
             }
             else
                 callback(null, { informacao: 'Carro Deletado Com Sucesso' });
@@ -170,7 +169,6 @@ function deletarOpcional(transaction, id, callback) {
                 callback(500, { informacao: 'Erro Ao Deletar Opcionais' });
             }
             else{
-                console.log('sucesso del opcional: ');
                 callback(null, { informacao: 'Carro Opcionais Deletados Com Sucesso' });
             }
         });
@@ -200,7 +198,6 @@ function selecionarCarro(query, callback) {
                 if (err)
                     callback(500, { informacao: 'Erro Ao Buscar Carro' });
                 else{
-                    console.log('sucesso del carro: ');
                     callback(null, dados);
                 }
             });

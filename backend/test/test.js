@@ -4,42 +4,49 @@ const assert = require('assert'),
     mockery = require('mockery'),
     should = require('should');
 
-let idProvisorio;
+let idCarro,
+    idCliente,
+    idFinanceiro;
 
 var server = require('../server.js');
 var request = require("request");
 var caminho = 'http://localhost:3000';
+var divisor = ' --------------------------------------------------------';
 
-
+console.log(divisor);
+console.log(" ------------   INICIANDO TESTES API CARRO   ------------");
 describe("  Teste API...: CarroAPI", function () {
+    console.log(divisor);
 
-    var divisor = ' -------------------------------------------------------';
+    // before(function () {
+    //     // console.log('\n');
+    //     // console.log(divisor);
+    // });
 
-    before(function () {
-        console.log('');
-        console.log(divisor);
-    });
-
-    // Begin - Subindo Servidor
-    describe("Servidor", function () {
+    //  -- INICIANDO SERVIDOR API CARRO - LOCALHOST:3000  --------------------------------------------------------------
+    describe("INICIANDO SERVIDOR", function () {
+        before(function () {
+            console.log(divisor);
+        });
         after(function () {
             console.log(divisor);
         });
 
-        it('1 - Subindo servidor', function (done) {
-            //this.timeout(server());
+        it('1 - Servidor localhost:3000', function (done) {
             this.timeout(5000);
 
             server();
             setTimeout(function () {
-                console.log('');
                 done();
-            }, 800);
+            }, 2000);
         });
     });
-    // End - Subindo Servidor
 
+    //  -- INICIANDO TESTE API CARRO - CRUD CARRO  ---------------------------------------------------------------------
     describe('2 - Iniciando teste funcionalidade.: Carro', function () {
+        before(function () {
+            console.log('');
+        });
 
         it('[2.1] chamada GET - Listar todos carros', function (done) {
             var options = {
@@ -49,7 +56,6 @@ describe("  Teste API...: CarroAPI", function () {
                 json: true
             };
             request(options, function (error, response, body) {
-                // console.log(response);
                 response.statusCode.should.be.equal(200);
                 done();
             });
@@ -77,9 +83,7 @@ describe("  Teste API...: CarroAPI", function () {
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
-
-                idProvisorio = body.id;
-
+                idCarro = body.id;
                 done();
             });
         }); // FIM it[2.2]
@@ -87,7 +91,7 @@ describe("  Teste API...: CarroAPI", function () {
         it('[2.3] chamada PUT - Atualizar', function (done) {
             var options = {
                 method: 'PUT',
-                url: caminho + '/api/carro/' + idProvisorio,
+                url: caminho + '/api/carro/' + idCarro,
                 headers: {'content-type': 'application/json'},
                 body: {
                     marca: 'Fiat',
@@ -113,32 +117,22 @@ describe("  Teste API...: CarroAPI", function () {
         it('[2.4] chamada GET :id - Buscar carro expecifico', function (done) {
             var options = {
                 method: 'GET',
-                url: caminho + '/api/carro/' + idProvisorio,
+                url: caminho + '/api/carro/' + idCarro,
                 headers: {'content-type': 'application/json'}
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
                 done();
+                console.log(divisor);
             });
         }); // FIM it[2.4]
 
-        it('[2.5] chamada DELETE - Excluir', function (done) {
-            var options = {
-                method: 'DELETE',
-                url: caminho + '/api/carro/' + idProvisorio,
-                headers: {'content-type': 'application/json'}
-            };
-            request(options, function (error, response, body) {
-                response.statusCode.should.be.equal(200);
-                done();
-            });
-        }); // FIM it[2.5]
     }); // FIM describe[2]
 
+    // -- INICIANDO TESTE API CARRO - CRUD CLIENTE  --------------------------------------------------------------------
     describe('3 - Iniciando teste funcionalidade.: Cliente', function () {
         before(function () {
             console.log('');
-            console.log(divisor);
         });
 
         it('[3.1] chamada GET - Listar todos clientes', function (done) {
@@ -156,22 +150,23 @@ describe("  Teste API...: CarroAPI", function () {
         it('[3.2] chamada POST - Adicionar novo cliente', function (done) {
             var options = {
                 method: 'POST',
-                url: caminho + '/api/carro/50',
+                url: caminho + '/api/cliente/' + idCarro,
                 headers: {'content-type': 'application/json'},
                 body: {
-                    nome: 'Cliente Test',
-                    cpf: '11.111.111-11',
-                    sexo: 'Masculino',
-                    rua: 'Rua test 01',
-                    bairro: 'Bairro Test',
-                    cep: '14401-001',
-                    complemento: 'Ap 01',
-                    telefone: '3701-0001'
+                    nome: 'Dona Test',
+                    cpf: '372.000.999-99',
+                    sexo: 'FEMININO',
+                    rua: 'Rua Da Dona Test',
+                    bairro: 'Bairro Da Dona Test',
+                    cep: '14000-999',
+                    complemento: 'Complemento Da Dona Test',
+                    telefone: '3404-9999'
                 },
                 json: true
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
+                idCliente = body.id;
                 done();
             });
         }); // FIM it[3.2]
@@ -179,17 +174,17 @@ describe("  Teste API...: CarroAPI", function () {
         it('[3.3] chamada PUT - Atualizar', function (done) {
             var options = {
                 method: 'PUT',
-                url: caminho + '/api/carro/50',
+                url: caminho + '/api/cliente/' + idCliente,
                 headers: {'content-type': 'application/json'},
                 body: {
-                    nome: 'Cliente Test PUT',
-                    cpf: '11.111.111-001',
-                    sexo: 'Feminino',
-                    rua: 'Rua test 011',
-                    bairro: 'Bairro Test 01',
-                    cep: '14401-011',
-                    complemento: 'Ap 0111',
-                    telefone: '3701-0111'
+                    nome: 'Edit Test',
+                    cpf: '372.000.999-99',
+                    sexo: 'MASCULINO',
+                    rua: 'Rua Da Edit Test',
+                    bairro: 'Bairro Da Edit Test',
+                    cep: '14000-999',
+                    complemento: 'Complemento Edit Test 000',
+                    telefone: '3404-0000'
                 },
                 json: true
             };
@@ -202,32 +197,24 @@ describe("  Teste API...: CarroAPI", function () {
         it('[3.4] chamada GET :id - Buscar cliente expecifico', function (done) {
             var options = {
                 method: 'GET',
-                url: caminho + '/api/carro/50',
-                headers: {'content-type': 'application/json'}
+                url: caminho + '/api/carro/' + idCliente,
+                headers: {'content-type': 'application/json'},
+                json: true
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
                 done();
+                console.log(divisor);
             });
         }); // FIM it[3.4]
 
-        it('[3.5] chamada DELETE - Excluir', function (done) {
-            var options = {
-                method: 'DELETE',
-                url: caminho + '/api/carro/50',
-                headers: {'content-type': 'application/json'}
-            };
-            request(options, function (error, response, body) {
-                response.statusCode.should.be.equal(200);
-                done();
-            });
-        }); // FIM it[3.5]
     }); // FIM describe[3]
 
+    // -- INICIANDO TESTE API CARRO - CRUD FINANCEIRO  -----------------------------------------------------------------
     describe('4 - Iniciando teste funcionalidade.: Financeiro', function () {
         before(function () {
             console.log('');
-            console.log(divisor);
+            // console.log(divisor);
         });
 
         it('[4.1] chamada GET - Listar todos financeiros', function (done) {
@@ -242,16 +229,16 @@ describe("  Teste API...: CarroAPI", function () {
             });
         }); // FIM it[4.1]
 
-        it('[4.2] chamda POST Adicionar novo financeiro', function (done) {
+        it('[4.2] chamada POST Adicionar novo financeiro', function (done) {
             var options = {
                 method: 'POST',
-                url: caminho + '/api/financeiro/',
+                url: caminho + '/api/financeiro/' + idCliente,
                 headers: {'content-type': 'application/json'},
                 body: {
-                    valorParcela: '',
-                    parcelas: '',
-                    percentual: '',
-                    vencimento: ''
+                    parcelas: 60,
+                    preco: "100000",
+                    entrada: "10000",
+                    vencimento: "15"
                 },
                 json: true
             };
@@ -264,13 +251,13 @@ describe("  Teste API...: CarroAPI", function () {
         it('[4.3] chamada PUT - Atualizar', function (done) {
             var options = {
                 method: 'PUT',
-                url: caminho + '/api/financeiro/:id',
+                url: caminho + '/api/financeiro/' + idCliente,
                 headers: {'content-type': 'application/json'},
                 body: {
-                    valorParcela: '',
-                    parcelas: '',
-                    percentual: '',
-                    vencimento: ''
+                    parcelas: 12,
+                    preco: '100000',
+                    entrada: '40000',
+                    vencimento: '15'
                 },
                 json: true
             };
@@ -278,47 +265,85 @@ describe("  Teste API...: CarroAPI", function () {
                 response.statusCode.should.be.equal(200);
                 done();
             });
-        }); // FIM PUT
-
+        }); // FIM it[4.3]
 
         it('[4.4] chamada GET :id - Buscar cliente expecifico', function (done) {
             var options = {
                 method: 'GET',
-                url: caminho + '/api/financeiro/:id',
+                url: caminho + '/api/financeiro/' + idCliente,
                 headers: {'content-type': 'application/json'}
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
                 done();
+                console.log(divisor);
             });
         }); // FIM it[4.4]
 
-        it('[4.5] chamada DELETE - Excluir', function (done) {
+    }); // FIM describe[4]
+
+    // -- INICIANDO TESTE API DE DELETE: FINANCEIRO, CLIENTE, CARRO  ---------------------------------------------------
+    describe('5 - Iniciando teste funcionalidade DELETE.:', function () {
+        it('[5.1] chamada DELETE Financeiro - Excluir', function (done) {
             var options = {
                 method: 'DELETE',
-                url: caminho + '/api/financeiro/:id',
+                url: caminho + '/api/financeiro/' + idCliente,
                 headers: {'content-type': 'application/json'}
             };
             request(options, function (error, response, body) {
                 response.statusCode.should.be.equal(200);
                 done();
             });
-        }); // FIM it[4.5]
-    }); // FIM describe[4]
+        }); // FIM it[5.1]
 
-    //region Finalizando Testes
+        it('[5.2] chamada DELETE Cliente - Excluir', function (done) {
+            var options = {
+                method: 'DELETE',
+                url: caminho + '/api/cliente/' + idCliente,
+                headers: {'content-type': 'application/json'}
+            };
+            request(options, function (error, response, body) {
+                response.statusCode.should.be.equal(200);
+                done();
+            });
+        }); // FIM it[5.2]
+
+        it('[5.3] chamada DELETE Carro - Excluir', function (done) {
+            var options = {
+                method: 'DELETE',
+                url: caminho + '/api/carro/' + idCarro,
+                headers: {'content-type': 'application/json'}
+            };
+            request(options, function (error, response, body) {
+                response.statusCode.should.be.equal(200);
+                done();
+                console.log(divisor);
+                console.log('    ID Carro.......: ', idCarro);
+                console.log('    ID Cliente.....: ', idCliente);
+                console.log(divisor);
+            });
+        }); // FIM it[5.3]
+
+    });
+
+//  -- FINALIZANDO TESTE API CARRO - CRUD CARRO  -----------------------------------------------------------------------
     describe('Conclusão', function () {
         it('Finalizando teste', function (done) {
             this.timeout(300);
             setTimeout(function () {
                 done();
             }, 150);
+        });
+        after(function () {
+            console.log(divisor);
+            console.log(" ------------   TESTES API CARRO CONCLUIDO   ------------");
             console.log(divisor);
         });
     });
-    //endregion
+//endregion
 
-}); // FIM Teste API
+})
+; // FIM Teste API
 
 /*
  {

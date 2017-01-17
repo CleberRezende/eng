@@ -198,12 +198,15 @@ function selecionarCliente(req, callback) {
 
 
 function buscarCliente(req, callback) {
-    new sql.Request()
-        .input('ID', req.params.id)
-        .execute('nome_proc', function (err, dados) {
-            if (err)
-                callback(500, { informacao: 'Erro Ao Buscar Cliente' });
-            else
-                callback(null, { informacao: 'Cliente Buscado Com Sucesso' });
-        });
+    sql.connect(config).then(function () {
+        new sql.Request()
+            .input('ID_CLIENTE', req.params.id)
+            .execute('SP_BUSCAR_CLIENTE_CARRO', function (err, dados) {
+                if (err)
+                    callback(500, { informacao: 'Erro Ao Buscar Cliente' });
+                else
+                    callback(null, { informacao: 'Cliente Buscado Com Sucesso' }, dados);
+            });
+    });
+
 }

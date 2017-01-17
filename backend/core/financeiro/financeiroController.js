@@ -24,11 +24,11 @@ module.exports = {
 function criar(req, res) {
     CalculoFinanceiro.calcular(req, function (valorParcela, percentual) {
         if (valorParcela) {
-            Repository.criarFinanceiro(req, valorParcela, percentual, function (err, dados) {
+            Repository.criarFinanceiro(req, valorParcela, percentual, function (err, dados, idFinanceiro) {
                 if (err)
                     res.status(err).json(dados);
                 else
-                    res.status(200).json(dados);
+                    res.status(200).json(idFinanceiro);
             });
         }
     }); // CalculoFinanceiro
@@ -94,7 +94,7 @@ function selecionar(req, res) {
 
 
 function buscar(req, res) {
-    Repository.buscarFinanceiro(req, function (err, dados) {
+    Repository.buscarFinanceiro(req, function (err, informacao, dados) {
         if (err)
             res.status(err).json(dados);
         else

@@ -1,7 +1,7 @@
 -- TABELA CARRO
 
 USE db_CARRO
-SELECT * FROM tb_CARRO
+SELECT * FROM tb_CARRO order by CAR_CODIGO desc
 
 
 
