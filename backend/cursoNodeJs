@@ -1,0 +1,50 @@
+// index.js
+const express    = require("express");
+const bodyParser = require("body-parser");
+const app        = express();
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+app.post("/dosave", (req,res) => {
+  console.log("os dados recebidos do formulário são:");
+  console.log(req.body);
+  res.send("<h1>Sucesso!</h1><a href='index.html'>voltar</a>");
+});
+app.post("/adivinha", (req,res) => {
+  if(req.body && req.body.numero == 7)
+    res.send("<h1>Acertou!</h1><a href='numero.html'>voltar</a>");
+  else
+    res.send("<h1>Errou!</h1><a href='numero.html'>voltar</a>");
+});
+app.get("/convidados", (req,res) => {
+  var convs = [{nomeconvidado:"Maria"},{nomeconvidado:"João"}];
+  res.send(convs);
+});
+app.listen(3000);
+console.log("app online");
+
+
+
+prepare um novo documento html chamado moderno.html. Ele deve ser salvo dentro da pasta public
+<!DOCTYPE html>
+<!-- moderno.html -->
+<html>
+<head>
+  <title>App web moderno</title>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+  <h1>App web moderno</h1>
+  <button id="solicita">Solicitar convidados</button>
+  <div id="ret"></div>
+  <script>
+    $("#solicita").click( () => {
+      $.getJSON( "convidados", ( data ) => {
+        $.map(data, (e) => {
+          $("#ret").append($("<p>").text(e.nomeconvidado));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
