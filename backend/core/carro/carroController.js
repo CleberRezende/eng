@@ -51,7 +51,6 @@ function criar(req, res) {
                 }); // FIM Repository.criarOpcionalCarro
             })); // FIM LET PROMISSES
 
-
             Promise.all(promises).then(() => {
                     callback(null, null, idCarro);
                 }, (err) => {
@@ -254,7 +253,72 @@ function buscar(req, res) {
 
 
 
+/*
 
+
+http://expressjs.com/pt-br/guide/database-integration.html#postgres
+
+
+
+ module.exports = {
+ listarCidadeDropdown: function (params, connectionString, callBack) {
+ const db = require('pg-db')(connectionString);
+
+ db.query('SELECT * FROM Administracao.ListarCidadeDropdown($1) AS (' +
+ '"idCidade" integer, ' +
+ '"nomeCidade" varchar(50),' +
+ '"unidadeFederacao" char(2));',
+ [params.unidadeFederacao],
+ function (err, rows) {
+ if (err) {
+ err.info = {
+ httpCode: 500,
+ code: 5,
+ message: 'listarCidadeDropdown: ' + err.message + ' (' + err.line + ')'
+ };
+ } else if (rows.length === 0) {
+ err = {
+ info: {
+ httpCode: 400,
+ code: 6,
+ message: ['Unidade Federação inválida']
+ }
+ }
+ }
+ callBack(err, (err ? err.info.httpCode : 200), rows);
+ }
+ );
+ },
+
+ listarUnidadeFederacaoDropdown: function (connectionString, callBack) {
+ const db = require('pg-db')(connectionString);
+
+ db.query('SELECT * FROM Administracao.ListarUnidadeFederacaoDropdown() AS (' +
+ '"unidadeFederacao" char(2));',
+ [],
+ function (err, rows) {
+ if (err) {
+ err.info = {
+ httpCode: 500,
+ code: 5,
+ message: 'listarUnidadeFederacaoDropdown: ' + err.message + ' (' + err.line + ')'
+ };
+ } else if (rows.length === 0) {
+ err = {
+ info: {
+ httpCode: 204,
+ code: 6,
+ message: 'listarUnidadeFederacaoDropdown'
+ }
+ }
+ }
+ callBack(err, (err ? err.info.httpCode : 200), rows);
+ }
+ );
+ }
+ };
+
+* */
 
 
 
