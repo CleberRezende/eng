@@ -323,5 +323,160 @@ http://expressjs.com/pt-br/guide/database-integration.html#postgres
 
 
 
+/* INICIO POSTGRES
+--------------------------------------------------------------------------------------
+CREATE TABLE Seguranca.Usuario(
+  cpf		VARCHAR(20) CONSTRAINT unq__USUARIO_CPF UNIQUE CONSTRAINT nn_USUARIO_CPF NOT NULL,
+  senha   VARCHAR(100) CONSTRAINT nn_USUARIO_SENHA NOT NULL,
+  email	VARCHAR(100) CONSTRAINT nn_USUARIO_EMAIL NOT NULL
+);
 
+CREATE SCHEMA Seguranca;
+
+SET SEARCH_PATH = Seguranca;
+
+CREATE OR REPLACE FUNCTION Seguranca.inserirUsuario(pCpf   VARCHAR(20),
+                                                    pSenha VARCHAR(100),
+                                                    pEmail VARCHAR(100))
+  RETURNS JSON AS $$
+
+DECLARE
+  vRetException VARCHAR(1000);
+  vReturnId     VARCHAR(20);
+
+BEGIN
+
+  INSERT INTO Seguranca.Usuario(
+    CPF,
+    SENHA,
+    EMAIL
+  )VALUES(
+    pCpf,
+    MD5(pSenha),
+    pEmail) RETURNING cpf INTO vReturnId;
+
+  RETURN '{"result": "Usuario cadastrado com sucesso!", "CPF":"' || vReturnId || '", "code":0}';
+
+  EXCEPTION WHEN OTHERS
+  THEN
+    GET STACKED DIAGNOSTICS vRetException = MESSAGE_TEXT;
+    RETURN '{"result": ' || to_json(vRetException) || ', "code": 500}';
+END;
+$$
+LANGUAGE plpgsql;
+
+SELECT * FROM Seguranca.inserirUsuario('087.831.666-89', '123321', 'wagner@engsolutions.com.br');
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+CREATE TABLE Seguranca.Usuario(
+  cpf		VARCHAR(20) CONSTRAINT unq__USUARIO_CPF UNIQUE CONSTRAINT nn_USUARIO_CPF NOT NULL,
+  senha   VARCHAR(100) CONSTRAINT nn_USUARIO_SENHA NOT NULL,
+  email	VARCHAR(100) CONSTRAINT nn_USUARIO_EMAIL NOT NULL
+);
+
+CREATE SCHEMA Seguranca;
+
+SET SEARCH_PATH = Seguranca;
+
+CREATE OR REPLACE FUNCTION Seguranca.inserirUsuario(pCpf   VARCHAR(20),
+                                                    pSenha VARCHAR(100),
+                                                    pEmail VARCHAR(100))
+  RETURNS JSON AS $$
+
+DECLARE
+  vRetException VARCHAR(1000);
+  vReturnId     VARCHAR(20);
+
+BEGIN
+
+  INSERT INTO Seguranca.Usuario(
+    CPF,
+    SENHA,
+    EMAIL
+  )VALUES(
+    pCpf,
+    MD5(pSenha),
+    pEmail) RETURNING cpf INTO vReturnId;
+
+  RETURN '{"result": "Usuario cadastrado com sucesso!", "CPF":"' || vReturnId || '", "code":0}';
+
+  EXCEPTION WHEN OTHERS
+  THEN
+    GET STACKED DIAGNOSTICS vRetException = MESSAGE_TEXT;
+    RETURN '{"result": ' || to_json(vRetException) || ', "code": 500}';
+END;
+$$
+LANGUAGE plpgsql;
+
+SELECT * FROM Seguranca.inserirUsuario('087.831.666-89', '123321', 'wagner@engsolutions.com.br');
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+SELECT Seguranca.DeletarFuncoes('Administracao', 'ListarCdlDropdown');
+CREATE OR REPLACE FUNCTION Administracao.ListarCdlDropdown(pIdGrupoCdl INTEGER,
+                                                           pIdUsuario  INTEGER)
+    RETURNS TABLE("idCdl" VARCHAR,
+                  "razaoSocial" VARCHAR(70),
+                  "nomeFantasia" VARCHAR(70)) AS $$
+
+/*
+Documentação
+Arquivo Fonte.....: CDL.sql
+Objetivo..........: Listar CDLs dropdown
+Autor.............: Wagner Monteiro
+Data..............: 05/01/2017
+Ex................: SELECT * FROM Administracao.ListarCdlDropdown('3', '47');
+*/
+
+
+/*
+BEGIN
+    RETURN QUERY
+    SELECT
+        DISTINCT Seguranca.criptografahash(3, cdl.idCdl::VARCHAR(200)),
+        cdl.razaoSocial,
+        cdl.nomeFantasia
+    FROM Administracao.Cdl cdl
+        INNER JOIN Administracao.Unidade u
+            ON u.idCdl = cdl.idCdl
+        INNER JOIN Seguranca.UsuarioUnidade uu
+            ON uu.idUnidade = u.idUnidade
+    WHERE
+        cdl.idGrupoCdl = pIdGrupoCdl
+        AND CASE
+            WHEN pIdUsuario IS NOT NULL
+                THEN uu.idUsuario = pIdUsuario
+            ELSE
+                TRUE
+            END;
+
+END;
+$$
+LANGUAGE plpgsql;
+
+*/
 
