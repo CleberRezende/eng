@@ -1,0 +1,162 @@
+/**
+ * Created by cleber on 03/02/2017.
+ */
+
+var pg = require('pg-db')("postgres://postgres:123456@192.168.10.93/candyshop");
+
+module.exports = {
+    inserirProduto,
+    listarProduto,
+    listarProdutoPorId,
+    atualizarProduto,
+    excluirProduto
+};
+
+function inserirProduto(params, callback) {
+    pg.query("SELECT * FROM Comercial.INSERIRPRODUTO($1, $2, $3, $4, $5, $6);",
+        [
+            params.quantidade,
+            params.precovenda,
+            params.nome,
+            params.valorpago,
+            params.fornecedor,
+            params.dtacadastro
+        ],
+        function (err, rows) {
+            if (err) {
+                err.tipo = {
+                    httpCode: 500,
+                    errorTipoRepository: 1,
+                    errorRepository: 'inserirProduto: ' + err.message + " (" + err.line + ')'
+                };
+            }
+            else if (rows[0].inserirproduto.code != '0') {
+                console.log(rows[0].inserirproduto);
+                err = {
+                    tipo: {
+                        httpCode: 400,
+                        errorTipoRepository: 2,
+                        errorRepository: 'inserirProduto: ' + rows[0].inserirproduto
+                    }
+                };
+            }
+            callback(err, (err ? err.tipo.httpCode : 200), rows);
+        }
+    );
+
+}
+
+
+function listarProduto(params, callback) {
+    pg.query('SELECT * FROM COMERCIAL.LISTARPRODUTO($1);',
+        [params],
+        function (err, rows) {
+            if (err) {
+                err.tipo = {
+                    httpCode: 500,
+                    errorTipoRepository: 3,
+                    errorRepository: 'listarProduto: ' + err.message + " (" + err.line + ')'
+                };
+            }
+            else if (rows.length === 0) {
+                err = {
+                    tipo: {
+                        httpCode: 204,
+                        errorTipoRepository: 4,
+                        errorRepository: 'listarProduto'
+                    }
+                }
+            }
+            callback(err, (err ? err.tipo.httpCode : 200), rows);
+        }
+    );
+}
+
+
+function listarProdutoPorId(params, callback) {
+    pg.query('SELECT * FROM COMERCIAL.LISTARPRODUTOPORID($1) AS ( ' +
+        '"quantidade" integer,' +
+        '"precovenda" numeric,' +
+        '"nome" varchar);',
+        [params],
+        function (err, rows) {
+            if (err) {
+                err.tipo = {
+                    httpCode: 500,
+                    errorRepository: 'listarProdutoPorId' + err.message + " (" + err.line + ')'
+                }
+            }
+            else if (rows.length === 0) {
+                err = {
+                    tipo: {
+                        httpCode: 204,
+                        errorRepository: 'listarProdutoPorId'
+                    }
+                }
+            }
+            callback(err, (err ? err.tipo.httpCode : 200), rows);
+        }
+    )
+}
+
+
+function atualizarProduto(id, params, callback) {
+    pg.query("SELECT * FROM COMERCIAL.ATUALIZARPRODUTO($1, $2, $3, $4, $5, $6, $7);",
+        [
+            id,
+            params.quantidade,
+            params.precovenda,
+            params.nome,
+            params.valorpago,
+            params.fornecedor,
+            params.dtacadastro
+        ],
+        function (err, rows) {
+            if (err) {
+                err.tipo = {
+                    httpCode: 500,
+                    errorTipoRepository: 5,
+                    errorRepository: 'atualizarProduto'
+                }
+            }
+            else if (rows[0].atualizarproduto.code != '0') {
+                console.log(rows[0].inserirproduto.code);
+                err = {
+                    tipo: {
+                        httpCode: 400,
+                        errorTipoRepository: 6,
+                        errorRepository: 'inserirProduto: ' + rows[0].inserirproduto
+                    }
+                };
+            }
+            callback(err, (err ? err.tipo.httpCode : 200), rows);
+        }
+    );
+}
+
+
+function excluirProduto(params, callback) {
+    pg.query("SELECT * FROM COMERCIAL.EXCLUIRPRODUTO($1);",
+        [params],
+        function (err, rows) {
+            if(err){
+                err.tipo = {
+                    httpCode: 500,
+                    errorTipoRepository: 7,
+                    errorRepository: 'excluirProduto'
+                }
+            }
+            else if(rows[0].excluirproduto.code != '0'){
+                console.log(rows[0].excluirproduto.code);
+                err = {
+                    tipo : {
+                        httpCode: 400,
+                        errorTipoRepository: 8,
+                        errorRepository: 'excluirProduto'
+                    }
+                }
+            }
+            callback(err, (err ? err.tipo.httpCode : 200), rows);
+        }
+    )
+}

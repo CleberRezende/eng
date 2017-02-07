@@ -1,0 +1,57 @@
+/**
+ * Created by cleber on 03/02/2017.
+ */
+const produtoRepository = require('./produtoRepository');
+
+module.exports = {
+    inserirProduto,
+    listarProduto,
+    listarProdutoPorId,
+    atualizarProduto,
+    excluirProduto
+};
+
+
+function inserirProduto(req, res) {
+    produtoRepository.inserirProduto(req.body, function (err, httpCode, rows) {
+        let result = err ? err : rows;
+        res.status(httpCode).json(result);
+    });
+}
+
+function listarProduto(req, res) {
+    let param = null;
+    produtoRepository.listarProduto(param, function (err, httpCode, rows) {
+        let result = err ? err : rows;
+        res.status(httpCode).json(result);
+    });
+
+}
+
+function listarProdutoPorId(req, res) {
+    produtoRepository.listarProduto(req.params.id, function (err, httpCode, rows) {
+        let result = err ? err : rows;
+        res.status(httpCode).json(result);
+    });
+}
+
+function atualizarProduto(req, res) {
+    produtoRepository.atualizarProduto(req.params.id, req.body, function (err, httpCode, rows) {
+        let result = err ? err : rows;
+        res.status(httpCode).json(result);
+    });
+}
+
+function excluirProduto(req, res) {
+    produtoRepository.excluirProduto(req.params.id, function (err, httpCode, rows) {
+        let result = err ? err : rows;
+        res.status(httpCode).json(result);
+    });
+}
+
+
+// -- Inserir
+// -- Atualizar
+// -- Excluir
+// -- Listar
+// -- Listar Por ID

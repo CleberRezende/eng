@@ -1,0 +1,169 @@
+--REGION - FUNCTION PROCEDURE INSERIR PRODUTO
+CREATE OR REPLACE FUNCTION COMERCIAL.INSERIRPRODUTO(
+  pQUANTIDADE  COMERCIAL.PRODUTO.QUANTIDADE%TYPE,
+  pPRECOVENDA  COMERCIAL.PRODUTO.PRECOVENDA%TYPE,
+  pNOME        COMERCIAL.PRODUTO.NOME%TYPE,
+  pVALORPAGO   COMERCIAL.PRODUTO.VALORPAGO%TYPE,
+  pFORNECEDOR  COMERCIAL.PRODUTO.FORNECEDOR%TYPE,
+  pDTACADASTRO COMERCIAL.PRODUTO.DTACADASTRO%TYPE
+)
+  RETURNS JSON AS $$
+
+/*
+Documentação
+Arquivo Fonte.....: Comercial.Produto
+Objetivo..........: Inserir um novo produto
+Autor.............: Cleber Spirlandeli
+Data..............: 03/02/2017
+Ex................: SELECT * FROM Comercial.inserirProduto ('100',
+                                                            '15.90',
+                                                            'Produto Teste SP',
+                                                            '5.50',
+                                                            'Nome Fornecedor',
+                                                            '2017-02-03'
+                                                            );
+*/
+
+DECLARE
+  vRETEXCEPTION VARCHAR(1000);
+  vReturnId     VARCHAR(20);
+
+BEGIN
+  INSERT INTO COMERCIAL.PRODUTO
+  (quantidade, precovenda, nome, valorpago, fornecedor, dtacadastro)
+  VALUES
+    (pQUANTIDADE, pPRECOVENDA, pNOME, pVALORPAGO, pFORNECEDOR, pDTACADASTRO)
+
+  RETURNING id
+    INTO vReturnId;
+
+  RETURN '{"result": "Produto cadastrado com sucesso!", "ID":"' || vReturnId || '", "code":0}';
+
+  EXCEPTION WHEN OTHERS
+  THEN
+    GET STACKED DIAGNOSTICS vRetException = MESSAGE_TEXT;
+    RETURN '{"result": ' || to_json(vRetException) || ', "code": 500}';
+END;
+$$
+LANGUAGE plpgsql;
+--ENDREGION
+
+
+
+
+--REGION - FUNCTION PROCEDURE LISTAR PRODUTO
+CREATE OR REPLACE FUNCTION COMERCIAL.LISTARPRODUTO( pIdProduto integer )
+
+  RETURNS TABLE("id" INTEGER,
+                "quantidade" INTEGER,
+                "precovenda" NUMERIC,
+                "nome"       VARCHAR)
+  AS $$
+
+/*
+Documentação
+Arquivo Fonte.....: Comercial.Produto
+Objetivo..........: Listar todos os produtos ou um produto pelo seu ID
+Autor.............: Cleber Spirlandeli
+Data..............: 03/02/2017
+Ex................: SELECT * FROM COMERCIAL.LISTARPRODUTO(20);
+*/
+
+BEGIN
+  RETURN QUERY SELECT
+                p.id,
+                 p.QUANTIDADE,
+                 p.PRECOVENDA,
+                 p.NOME
+            FROM COMERCIAL.PRODUTO p
+            WHERE CASE WHEN pIdProduto IS NOT NULL THEN p.ID = pIdProduto ELSE TRUE END;
+END;
+  $$
+  LANGUAGE plpgsql;
+--ENDREGION
+
+
+
+--REGION - FUNCTION PROCEDURE ATUALIZAR PRODUTO
+CREATE OR REPLACE FUNCTION COMERCIAL.ATUALIZARPRODUTO(
+  pID          COMERCIAL.PRODUTO.ID%TYPE,
+  pQUANTIDADE  COMERCIAL.PRODUTO.QUANTIDADE%TYPE,
+  pPRECOVENDA  COMERCIAL.PRODUTO.PRECOVENDA%TYPE,
+  pNOME        COMERCIAL.PRODUTO.NOME%TYPE,
+  pVALORPAGO   COMERCIAL.PRODUTO.VALORPAGO%TYPE,
+  pFORNECEDOR  COMERCIAL.PRODUTO.FORNECEDOR%TYPE,
+  pDTACADASTRO COMERCIAL.PRODUTO.DTACADASTRO%TYPE
+)
+  RETURNS JSON AS $$
+
+/*
+Documentação
+Arquivo Fonte.....: Comercial.Produto
+Objetivo..........: Atualizar um produto
+Autor.............: Cleber Spirlandeli
+Data..............: 03/02/2017
+Ex................: SELECT * FROM Comercial.inserirProduto ('100',
+                                                            '15.90',
+                                                            'Produto Teste SP',
+                                                            '5.50',
+                                                            'Nome Fornecedor',
+                                                            '2017-02-03'
+                                                            );
+*/
+
+DECLARE
+  vRETEXCEPTION VARCHAR(1000);
+
+BEGIN
+  UPDATE COMERCIAL.PRODUTO SET  quantidade = pQUANTIDADE,
+                                precovenda = pPRECOVENDA,
+                                nome = pNOME,
+                                valorpago = pVALORPAGO,
+                                fornecedor = pFORNECEDOR,
+                                dtacadastro = pDTACADASTRO
+  WHERE ID = pID;
+
+  RETURN '{"result": "Produto atualizado com sucesso!", "code":0}';
+
+  EXCEPTION WHEN OTHERS
+  THEN
+    GET STACKED DIAGNOSTICS vRetException = MESSAGE_TEXT;
+    RETURN '{"result": ' || to_json(vRetException) || ', "code": 500}';
+END;
+$$
+LANGUAGE plpgsql;
+--ENDREGION
+
+
+
+--REGION - FUNCTION PROCEDURE EXCLUIR PRODUTO
+CREATE OR REPLACE FUNCTION COMERCIAL.EXCLUIRPRODUTO( pIdProduto COMERCIAL.PRODUTO.ID%TYPE )
+
+  RETURNS JSON AS $$
+
+/*
+Documentação
+Arquivo Fonte.....: Comercial.Produto
+Objetivo..........: Excluir produto pelo seu ID
+Autor.............: Cleber Spirlandeli
+Data..............: 06/02/2017
+Ex................: SELECT * FROM COMERCIAL.EXCLUIRPRODUTO(20);
+*/
+
+DECLARE
+  vRetException VARCHAR(1000);
+
+BEGIN
+  DELETE FROM COMERCIAL.PRODUTO
+               WHERE id = pIdProduto;
+
+  RETURN '{"result": "Produto excluido com sucesso!", "code":0}';
+
+  EXCEPTION WHEN OTHERS
+  THEN
+    GET STACKED DIAGNOSTICS vRetException = MESSAGE_TEXT;
+    RETURN '{"result": ' || to_json(vRetException) || ', "code": 500}';
+END;
+$$
+LANGUAGE plpgsql;
+--ENDREGION
